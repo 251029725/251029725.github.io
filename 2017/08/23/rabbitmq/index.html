@@ -106,13 +106,13 @@
 
 
 
-<meta name="description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core.">
+<meta name="description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core">
 <meta name="keywords" content="RabbitMQ,Spring">
 <meta property="og:type" content="article">
 <meta property="og:title" content="RabbitMQ消息监听程序异常问题探究">
 <meta property="og:url" content="http://qingjianblog.com/2017/08/23/rabbitmq/index.html">
 <meta property="og:site_name" content="Wu.QingJian&#39;s Blog">
-<meta property="og:description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core.">
+<meta property="og:description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://qingjianblog.com/uploads/blog/rabbitmq/1.png">
 <meta property="og:image" content="http://qingjianblog.com/uploads/blog/rabbitmq/2.png">
@@ -120,7 +120,7 @@
 <meta property="og:updated_time" content="2017-08-23T10:30:06.051Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ消息监听程序异常问题探究">
-<meta name="twitter:description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core.">
+<meta name="twitter:description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core">
 <meta name="twitter:image" content="http://qingjianblog.com/uploads/blog/rabbitmq/1.png">
 
 
@@ -414,7 +414,7 @@
       
 
       
-        <h3 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a><strong>问题场景</strong></h3><p>在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。</p>
+        <script src="\assets\js\APlayer.min.js"> </script><h3 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a><strong>问题场景</strong></h3><p>在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。</p>
 <p>通过访问null对象来引发空指针异常，消息监听处理程序代码清单:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> amqp;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.amqp.core.Message;</div><div class="line"><span class="keyword">import</span> org.springframework.amqp.core.MessageListener;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FooMessageListener</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</div><div class="line">        String messageBody = <span class="keyword">new</span> String(message.getBody());</div><div class="line">        System.out.println(<span class="string">" [x] Received '"</span> + messageBody + <span class="string">"'"</span>);</div><div class="line">        String nullStr = <span class="keyword">null</span>;</div><div class="line">        nullStr.toString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>往消息监听队列发送一条消息，控制台不停打印异常日志：</p>
@@ -487,8 +487,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/23/hello-world/" rel="next" title="开篇">
-                <i class="fa fa-chevron-left"></i> 开篇
+              <a href="/2017/08/23/first-blog/" rel="next" title="开篇,扬帆起航！">
+                <i class="fa fa-chevron-left"></i> 开篇,扬帆起航！
               </a>
             
           </div>
@@ -623,6 +623,17 @@
                   
                     
                       CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
                     
                 </a>
               </span>
