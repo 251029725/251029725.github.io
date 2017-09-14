@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="MySQL,数据库优化," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="前言MySQL优化有两大层面，第一是数据库层面，第二是硬件层面。数据库层面可以细分为以下几个方面：  数据库schema设计优化 SQL查询优化 锁策略优化 存储引擎优化 服务器配置优化 主从，读写分离 集群，负载均衡  本文讲解SQL查询优化 分析你的SQLExplain查看SQL执行计划Explain命令用来帮助我们获取Query的执行计划，用法很简单：在你的Query前面加上这个命令就行，">
+<meta name="keywords" content="MySQL,数据库优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL优化系列之查询优化">
+<meta property="og:url" content="http://wuqingjian.org/2017/09/14/MySQL优化系列之查询优化/index.html">
+<meta property="og:site_name" content="Wu.QingJian&#39;s Blog">
+<meta property="og:description" content="前言MySQL优化有两大层面，第一是数据库层面，第二是硬件层面。数据库层面可以细分为以下几个方面：  数据库schema设计优化 SQL查询优化 锁策略优化 存储引擎优化 服务器配置优化 主从，读写分离 集群，负载均衡  本文讲解SQL查询优化 分析你的SQLExplain查看SQL执行计划Explain命令用来帮助我们获取Query的执行计划，用法很简单：在你的Query前面加上这个命令就行，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/mysql/btree.jpg">
+<meta property="og:updated_time" content="2017-09-14T08:28:03.681Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL优化系列之查询优化">
+<meta name="twitter:description" content="前言MySQL优化有两大层面，第一是数据库层面，第二是硬件层面。数据库层面可以细分为以下几个方面：  数据库schema设计优化 SQL查询优化 锁策略优化 存储引擎优化 服务器配置优化 主从，读写分离 集群，负载均衡  本文讲解SQL查询优化 分析你的SQLExplain查看SQL执行计划Explain命令用来帮助我们获取Query的执行计划，用法很简单：在你的Query前面加上这个命令就行，">
+<meta name="twitter:image" content="http://wuqingjian.org/uploads/blog/mysql/btree.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wuqingjian.org/2017/09/14/MySQL优化系列之查询优化/"/>
+
+
+
+
+
+  <title>MySQL优化系列之查询优化 | Wu.QingJian's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5b2bb05dc48af776b444fcc26d967236";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wu.QingJian's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Don't be moved by yourself</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wuqingjian.org/2017/09/14/MySQL优化系列之查询优化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="吴清剑">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wu.QingJian's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL优化系列之查询优化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-14T16:19:59+08:00">
+                2017-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index">
+                    <span itemprop="name">MySQL</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2017/09/14/MySQL优化系列之查询优化/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2017/09/14/MySQL优化系列之查询优化/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h1><p>MySQL优化有两大层面，第一是数据库层面，第二是硬件层面。数据库层面可以细分为以下几个方面：</p>
+<ul>
+<li>数据库schema设计优化</li>
+<li>SQL查询优化</li>
+<li>锁策略优化</li>
+<li>存储引擎优化</li>
+<li>服务器配置优化</li>
+<li>主从，读写分离</li>
+<li>集群，负载均衡</li>
+</ul>
+<p>本文讲解SQL查询优化</p>
+<h1 id="分析你的SQL"><a href="#分析你的SQL" class="headerlink" title="分析你的SQL"></a><strong>分析你的SQL</strong></h1><h2 id="Explain查看SQL执行计划"><a href="#Explain查看SQL执行计划" class="headerlink" title="Explain查看SQL执行计划"></a><strong>Explain查看SQL执行计划</strong></h2><p>Explain命令用来帮助我们获取Query的执行计划，用法很简单：在你的Query前面加上这个命令就行，例如：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">mysql&gt; explain select * from t where id = 1;</div><div class="line">+<span class="comment">----+-------------+-------+-------+---------------+---------+---------+-------+------+-------+</span></div><div class="line">| id | select_type | table | type  | possible_keys | key     | key_len | ref   | rows | Extra |</div><div class="line">+<span class="comment">----+-------------+-------+-------+---------------+---------+---------+-------+------+-------+</span></div><div class="line">|  1 | SIMPLE      | t  | const | PRIMARY       | PRIMARY | 4       | const |    1 | NULL  |</div><div class="line">+<span class="comment">----+-------------+-------+-------+---------------+---------+---------+-------+------+-------+</span></div><div class="line">1 row in <span class="keyword">set</span></div></pre></td></tr></table></figure>
+<p>Explain信息解释：</p>
+<h3 id="id"><a href="#id" class="headerlink" title="id"></a><strong>id</strong></h3><ul>
+<li>Query Optimizer所选定的执行计划中查询的序列号，id相同顺序执行， id不同，数字越大，越先执行</li>
+</ul>
+<h3 id="select-type"><a href="#select-type" class="headerlink" title="select_type"></a><strong>select_type</strong></h3><p>所使用的查询类型，主要有以下这几种查询类型</p>
+<ul>
+<li>SIMPLE：查询中不包含子查询或者UNION，有连接查询时，外层的查询为SIMPLE，且只有一个</li>
+<li>PRIMARY：查询中包含子查询或者UNION，最外层查询被标记为PRIMARY，注意并不是主键查询</li>
+<li>UNION：UNION 语句中第二个SELECT 开始的后面所有SELECT，第一个SELECT 为PRIMARY</li>
+<li>UNION RESULT：包含UNION 的结果集，在UNION 和UNION ALL语句中，因为它不需要参与查询，所以id字段为NULL</li>
+<li>DEPENDENT UNION：与UNION 一样，出现在UNION或UNION ALL语句中，但是这个查询要受到外部查询的影响</li>
+<li>SUBQUERY：子查询内层查询的第一个SELECT，结果不依赖于外部查询结果集；</li>
+<li>DEPENDENT SUBQUERY：子查询中内层的第一个SELECT，依赖于外部查询的结果集；</li>
+<li>DERIVED：FROM字句中出现的子查询，也叫做派生表</li>
+</ul>
+<h3 id="table"><a href="#table" class="headerlink" title="table"></a><strong>table</strong></h3><p>显示的查询表名，如果查询使用了别名，那么这里显示的是别名，如果不涉及对数据表的操作，那么这显示为null，如果显示为尖括号括起来的<derived n="">就表示这个是临时表，后边的N就是执行计划中的id，表示结果来自于这个查询产生。如果是尖括号括起来的<union m,n="">，与<derived n="">类似，也是一个临时表，表示这个结果来自于union查询的id为M,N的结果集。</derived></union></derived></p>
+<h3 id="type"><a href="#type" class="headerlink" title="type"></a><strong>type</strong></h3><p>查询类型，评估查询性能好坏的重要指标，按照效率从高到底排序：</p>
+<ul>
+<li>const、system：当MySQL对查询某部分进行优化，并转换为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转换为一个常量，system是const类型的特例，当查询的表只有一行的情况下， 使用system</li>
+<li>eq_ref：唯一性索引扫描，最多只会有一条匹配结果，一般是通过主键或者唯一键索引来访问</li>
+<li>ref：非唯一性索引扫描，返回匹配某个单独值的所有行。常见于使用非唯一索引即唯一索引的非唯一前缀进行的查找</li>
+<li>ref_or_null：与ref 的唯一区别就是可以搜索包含null值的行</li>
+<li>index_merge：查询中同时使用两个（或更多）索引，常见and ，or的条件使用了不同的索引</li>
+<li>rang：索引范围扫描，返回匹配值域的行，常见于between、in 、like、&lt;、&gt;等查询</li>
+<li>index：全索引扫描，index与all区别为index类型只遍历索引树，常见于使用索引列就可以处理不需要读取数据文件的查询、可以使用索引排序或者分组的查询</li>
+<li>all：全表扫描，遍历全表以找到匹配的行</li>
+</ul>
+<h3 id="possible-keys"><a href="#possible-keys" class="headerlink" title="possible_keys"></a><strong>possible_keys</strong></h3><p>该查询可以利用的索引. 如果没有任何索引可以使用，就会显示成null，这一<br>项内容对于优化时候索引的调整非常重要；</p>
+<h3 id="key"><a href="#key" class="headerlink" title="key"></a><strong>key</strong></h3><p>MySQL Query Optimizer从possible_keys中实际选择使用的索引，若没有使用索引则显示为NULL</p>
+<h3 id="key-len"><a href="#key-len" class="headerlink" title="key_len"></a><strong>key_len</strong></h3><p>被选中使用索引的索引键长度，key_len只计算where条件用到的索引长度，而排序和分组就算用到了索引，也不会计算到key_len中。key_len字节的计算规则：</p>
+<ul>
+<li>字符串：char(n)-n字节，varchar(n)-n字节 + 2字节(变长) ，多字节charset * [1~4]字节（utf8为3字节，utf8mb4为4字节计算）</li>
+<li>数值类型：TINYINT-1字节，SMALLINT-2字节， MEDIUMINT-3字节， INT-4字节，BIGINT-8字节</li>
+<li>时间类型：DATE-3字节， TIMESTAMP-4字节， DATETIME-8字节</li>
+<li>字段属性：NULL属性+ 1字节</li>
+</ul>
+<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a><strong>ref</strong></h3><p>如果是使用的常数等值查询，这里会显示const，如果是连接查询，被驱动表的执行计划这里会显示驱动表的关联字段，如果是条件使用了表达式或者函数，或者条件列发生了内部隐式转换，这里可能显示为func</p>
+<h3 id="rows"><a href="#rows" class="headerlink" title="rows"></a><strong>rows</strong></h3><p>MySQL Query Optimizer通过系统收集到的统计信息估算出来扫描行数，不是精确值</p>
+<h3 id="extra"><a href="#extra" class="headerlink" title="extra"></a><strong>extra</strong></h3><p>查询中每一步实现的额外细节信息，下面列举几个比较常见的：</p>
+<ul>
+<li>Using index：表示MySQL将使用覆盖索引，以避免访问表。不要把覆盖索引和index访问类型弄混了</li>
+<li>Using where：如果查询未能使用索引，Using where的作用只是提醒我们MySQL将用where子句来过滤结果集</li>
+<li>Using filesort：无法利用索引完成的排序，需要额外的排序操作，可能在内存也可能在磁盘完成，常见于group by和order by 操作中</li>
+<li>Using temporary：表示使用了临时表存储中间结果，临时表可以是内存临时表和磁盘临时表。主要常见于group by、order by和多表join等操作中。</li>
+<li>Distinct：优化distinct操作，在找到第一匹配的元组后即停止找同样值的动作</li>
+<li>Not exists： 优化left join操作，一旦它找到了匹配left join标准的行，就不再搜索了</li>
+</ul>
+<p>Explain更详细信息请查看<a href="https://dev.mysql.com/doc/refman/5.5/en/explain-output.html" target="_blank" rel="external">官网</a></p>
+<h2 id="Profiling查看SQL查询性能"><a href="#Profiling查看SQL查询性能" class="headerlink" title="Profiling查看SQL查询性能"></a><strong>Profiling查看SQL查询性能</strong></h2><h3 id="1-查看profile是否打开"><a href="#1-查看profile是否打开" class="headerlink" title="1.查看profile是否打开"></a><strong>1.查看profile是否打开</strong></h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show variables like "profiling%";</div><div class="line">+<span class="comment">------------------------+-------+</span></div><div class="line">| Variable_name          | Value |</div><div class="line">+<span class="comment">------------------------+-------+</span></div><div class="line">| profiling              | OFF   |</div><div class="line">| profiling_history_size | 15    |</div><div class="line">+<span class="comment">------------------------+-------+</span></div><div class="line">2 rows in <span class="keyword">set</span></div></pre></td></tr></table></figure>
+<h3 id="2-当前会话开启profiling"><a href="#2-当前会话开启profiling" class="headerlink" title="2.当前会话开启profiling"></a><strong>2.当前会话开启profiling</strong></h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; set profiling=1;</div><div class="line">Query OK, 0 rows affected</div></pre></td></tr></table></figure>
+<h3 id="3-show-profiles"><a href="#3-show-profiles" class="headerlink" title="3.show profiles"></a><strong>3.show profiles</strong></h3><p>show profiles获取系统中保存的所有Query 的profile概要信息</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">show</span> <span class="keyword">profiles</span>;</div></pre></td></tr></table></figure>
+<h3 id="4-show-profile"><a href="#4-show-profile" class="headerlink" title="4.show profile"></a><strong>4.show profile</strong></h3><p>SHOW PROFILE <em>*</em> FOR QUERY n 获取单个查询的profile信息，比如cpu、io等，语法如下：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SHOW</span> PROFILE [<span class="keyword">type</span> [, <span class="keyword">type</span>] ... ]</div><div class="line">    [<span class="keyword">FOR</span> <span class="keyword">QUERY</span> n]</div><div class="line">    [<span class="keyword">LIMIT</span> <span class="keyword">row_count</span> [<span class="keyword">OFFSET</span> <span class="keyword">offset</span>]]</div><div class="line"></div><div class="line"><span class="keyword">type</span>:</div><div class="line">    ALL</div><div class="line">  | <span class="keyword">BLOCK</span> IO</div><div class="line">  | <span class="keyword">CONTEXT</span> SWITCHES</div><div class="line">  | CPU</div><div class="line">  | IPC</div><div class="line">  | <span class="keyword">MEMORY</span></div><div class="line">  | PAGE FAULTS</div><div class="line">  | <span class="keyword">SOURCE</span></div><div class="line">  | SWAPS</div></pre></td></tr></table></figure>
+<p>例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line">mysql&gt; DROP TABLE IF EXISTS t1;</div><div class="line">Query OK, 0 rows affected</div><div class="line"></div><div class="line">mysql&gt; CREATE TABLE T1 (id INT);</div><div class="line">Query OK, 0 rows affected</div><div class="line"></div><div class="line">mysql&gt; SHOW PROFILES;</div><div class="line">+<span class="comment">----------+------------+--------------------------+</span></div><div class="line">| Query_ID | Duration   | Query                    |</div><div class="line">+<span class="comment">----------+------------+--------------------------+</span></div><div class="line">|        1 |  0.0004705 | <span class="keyword">DROP</span> <span class="keyword">TABLE</span> <span class="keyword">IF</span> <span class="keyword">EXISTS</span> t1  |</div><div class="line">|        <span class="number">2</span> | <span class="number">0.81492075</span> | <span class="keyword">CREATE</span> <span class="keyword">TABLE</span> T1 (<span class="keyword">id</span> <span class="built_in">INT</span>) |</div><div class="line">+<span class="comment">----------+------------+--------------------------+</span></div><div class="line"><span class="number">2</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span></div><div class="line"></div><div class="line">mysql&gt; <span class="keyword">SHOW</span> PROFILE CPU, <span class="keyword">BLOCK</span> IO</div><div class="line"> <span class="keyword">FOR</span> <span class="keyword">QUERY</span> <span class="number">2</span>;</div><div class="line">+<span class="comment">----------------------+----------+----------+------------+--------------+---------------+</span></div><div class="line">| Status               | Duration | CPU_user | CPU_system | Block_ops_in | Block_ops_out |</div><div class="line">+<span class="comment">----------------------+----------+----------+------------+--------------+---------------+</span></div><div class="line">| starting             | 0.000155 | 0        | 0          |            0 |             0 |</div><div class="line">| checking permissions | 3.4E-5   | 0        | 0          |            0 |             0 |</div><div class="line">| Opening tables       | 9.7E-5   | 0        | 0          |            0 |             0 |</div><div class="line">| creating table       | 0.814011 | 0.013998 | 0.006999   |            0 |           304 |</div><div class="line">| After <span class="keyword">create</span>         | <span class="number">0.000168</span> | <span class="number">0</span>        | <span class="number">0</span>          |            <span class="number">0</span> |             <span class="number">0</span> |</div><div class="line">| <span class="keyword">query</span> <span class="keyword">end</span>            | <span class="number">3.6E-5</span>   | <span class="number">0</span>        | <span class="number">0</span>          |            <span class="number">0</span> |             <span class="number">0</span> |</div><div class="line">| closing <span class="keyword">tables</span>       | <span class="number">5.1E-5</span>   | <span class="number">0</span>        | <span class="number">0</span>          |            <span class="number">0</span> |             <span class="number">0</span> |</div><div class="line">| freeing items        | <span class="number">8E-5</span>     | <span class="number">0</span>        | <span class="number">0</span>          |            <span class="number">0</span> |             <span class="number">0</span> |</div><div class="line">| cleaning up          | <span class="number">0.00029</span>  | <span class="number">0</span>        | <span class="number">0</span>          |            <span class="number">0</span> |             <span class="number">0</span> |</div><div class="line">+<span class="comment">----------------------+----------+----------+------------+--------------+---------------+</span></div><div class="line"><span class="number">9</span> <span class="keyword">rows</span> <span class="keyword">in</span> <span class="keyword">set</span></div></pre></td></tr></table></figure>
+<p>通过查看profiling信息，我们可以清楚知道单个Query的CPU和Block IO的消耗，对于定位性能瓶颈非常适用。更详细信息请查看<a href="https://dev.mysql.com/doc/refman/5.5/en/show-profile.html" target="_blank" rel="external">官网</a></p>
+<h1 id="合理设计并利用索引"><a href="#合理设计并利用索引" class="headerlink" title="合理设计并利用索引"></a><strong>合理设计并利用索引</strong></h1><h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a><strong>索引类型</strong></h2><p>MySQL中，主要有四种类型的索引：</p>
+<h3 id="1-B-Tree索引"><a href="#1-B-Tree索引" class="headerlink" title="1.B-Tree索引"></a><strong>1.B-Tree索引</strong></h3><p>我们通常说的索引指的是B-Tree索引，MySQL除了Archive存储引擎之外的其他所有的存储引擎都支持B-Tree索引，最主要的索引类型，Innodb引擎使用的是B+Tree索引，是B-Tree索引的一种。下面会详细介绍B-Tree原理</p>
+<h3 id="2-Hash索引"><a href="#2-Hash索引" class="headerlink" title="2.Hash索引"></a><strong>2.Hash索引</strong></h3><p>Hash索引在MySQL 中使用的并不是很多，目前主要是Memory存储引擎使用。Hash索引可以一次性定位到查询目标，不像B-Tree索引需要从跟节点遍历到叶节点，效率很高，但是却没有广泛使用，原因是Hash索引也有它的限制：</p>
+<ul>
+<li>Hash索引指包含哈希值和行指针，而不存储字段值，所以不能使用索引中的值来避免读取行。不过，访问内存中的行的速度很快，大部分情况下对性能影响并不明显</li>
+<li>Hash索引只支持等值比较查询，包括=、in()和&lt;=&gt;查询，不能使用范围查询；</li>
+<li>Hash索引并不是按照索引指顺序存储的，所以无法用于排序</li>
+<li>存在大量Hash冲突时，会以链表的方式存放多个记录指针到同一个哈希条目中，这样维护操作代价就很高，查找性能可能变得更差</li>
+</ul>
+<h3 id="3-Full-Text索引"><a href="#3-Full-Text索引" class="headerlink" title="3.Full-Text索引"></a><strong>3.Full-Text索引</strong></h3><p>即全文索引，CHAR、VARCHAR、和TEXT这三种数据类型的列可以建Full-Text索引，主要用来代替效率低下的like模糊查询。类似搜索引擎做的事情，适用match  against操作，而不是普通的where条件操作</p>
+<h3 id="4-R-Tree索引"><a href="#4-R-Tree索引" class="headerlink" title="4.R-Tree索引"></a><strong>4.R-Tree索引</strong></h3><p>空间数据索引，可以用作地理数据存储，只有MyISAM引擎支持，与B-Tree不同，这类索引无须前缀查询，能从所有维度来索引数据。必须使用MySQL的GIS相关函数来维护数据。MySQL对GIS支持并不完善，对GIS的解决方案做的比较好的是PostgreSQL的PostGIS。</p>
+<h2 id="索引原理"><a href="#索引原理" class="headerlink" title="索引原理"></a><strong>索引原理</strong></h2><p>数据库查找数据有两种方式，第一种就是遍历表，一条一条找，第二种方式就是通过索引，好比通过字典查找某个字一个，哪种效率更高不得而知。索引是数据库优化最有效的手段，能够轻易将查询性能提升几个数量级。下面将详细介绍Innodb存储引擎的B+Tree索引原理。</p>
+<h3 id="详解B-树"><a href="#详解B-树" class="headerlink" title="详解B+树"></a><strong>详解B+树</strong></h3><p><img src="/uploads/blog/mysql/btree.jpg" alt="btree"><br>如上图，是一颗B+树，关于B+树的定义可以参见<a href="https://zh.wikipedia.org/wiki/B%2B%E6%A0%91" target="_blank" rel="external">B+树</a>，这里只说一些重点，浅蓝色的块我们称之为一个磁盘块，可以看到每个磁盘块包含几个数据项（深蓝色所示）和指针（黄色所示），如磁盘块1包含数据项17和35，包含指针P1、P2、P3，P1表示小于17的磁盘块，P2表示在17和35之间的磁盘块，P3表示大于35的磁盘块。真实的数据存在于叶子节点即3、5、9、10、13、15、28、29、36、60、75、79、90、99。非叶子节点不存储真实的数据，只存储指引搜索方向的数据项，如17、35并不真实存在于数据表中。</p>
+<h3 id="B-树的查找过程"><a href="#B-树的查找过程" class="headerlink" title="B+树的查找过程"></a><strong>B+树的查找过程</strong></h3><p>如图所示，如果要查找数据项29，那么首先会把磁盘块1由磁盘加载到内存，此时发生一次IO，在内存中用二分查找确定29在17和35之间，锁定磁盘块1的P2指针，内存时间因为非常短（相比磁盘的IO）可以忽略不计，通过磁盘块1的P2指针的磁盘地址把磁盘块3由磁盘加载到内存，发生第二次IO，29在26和30之间，锁定磁盘块3的P2指针，通过指针加载磁盘块8到内存，发生第三次IO，同时内存中做二分查找找到29，结束查询，总计三次IO。真实的情况是，3层的B+树可以表示上百万的数据，如果上百万的数据查找只需要三次IO，性能提高将是巨大的，如果没有索引，每个数据项都要发生一次IO，那么总共需要百万次的IO，显然成本非常非常高。</p>
+<h3 id="B-树性质"><a href="#B-树性质" class="headerlink" title="B+树性质"></a><strong>B+树性质</strong></h3><p>1.通过上面的分析，我们知道IO次数取决于B+数的高度h，假设当前数据表的数据为N，每个磁盘块的数据项的数量是m，则有h=㏒(m+1)N，当数据量N一定的情况下，m越大，h越小；而m = 磁盘块的大小 / 数据项的大小，磁盘块的大小也就是一个数据页的大小，是固定的，如果数据项占的空间越小，数据项的数量越多，树的高度越低。这就是为什么每个数据项，即索引字段要尽量的小，比如int占4字节，要比bigint8字节少一半。这也是为什么B+树要求把真实的数据放到叶子节点而不是内层节点，一旦放到内层节点，磁盘块的数据项会大幅度下降，导致树增高。当数据项等于1时将会退化成线性表。</p>
+<p>2.当B+树的数据项是复合的数据结构，比如(name,age,sex)的时候，B+数是按照从左到右的顺序来建立搜索树的，比如当(张三,20,F)这样的数据来检索的时候，B+树会优先比较name来确定下一步的所搜方向，如果name相同再依次比较age和sex，最后得到检索的数据；但当(20,F)这样的没有name的数据来的时候，B+树就不知道下一步该查哪个节点，因为建立搜索树的时候name就是第一个比较因子，必须要先根据name来搜索才能知道下一步去哪里查询。比如当(张三,F)这样的数据来检索时，B+树可以用name来指定搜索方向，但下一个字段age的缺失，所以只能把名字等于张三的数据都找到，然后再匹配性别是F的数据了， 这个是非常重要的性质，即索引的最左匹配特性。</p>
+<p>B-Tree扩展阅读：<a href="http://blog.csdn.net/v_JULY_v/article/details/6530142/#t7" target="_blank" rel="external">http://blog.csdn.net/v_JULY_v/article/details/6530142/#t7</a></p>
+<h2 id="何时创建索引"><a href="#何时创建索引" class="headerlink" title="何时创建索引"></a><strong>何时创建索引</strong></h2><p>索引是完全独立于基础数据之外的一部分数据，如果一个表的索引过多，而索引字段频繁的新增或插入，那将消耗大量的CPU和IO来维护索引，重新调整B-Tree。那么，应该何时创建索引？</p>
+<ul>
+<li>较频繁的作为查询条件的字段应该创建索引，相反，不会出现在WHERE子句中的字段不该创建索引</li>
+<li>唯一性太差的字段不适合单独创建索引，即使频繁作为查询条件，比如一些状态字段，就那么几个值，索引过滤效果差</li>
+<li>更新非常频繁的字段不适合创建索引</li>
+</ul>
+<h2 id="高性能索引策略"><a href="#高性能索引策略" class="headerlink" title="高性能索引策略"></a><strong>高性能索引策略</strong></h2><h3 id="独立的列"><a href="#独立的列" class="headerlink" title="独立的列"></a><strong>独立的列</strong></h3><p>独立的列是指索引列不能是表达式的一部分，也不能是函数的参数，比如下面的sql都无法使用索引：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">name</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">id</span> + <span class="number">1</span> = <span class="number">5</span>;</div><div class="line"><span class="keyword">select</span> <span class="keyword">name</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">to_days</span>(date_col) &lt;= <span class="number">5</span>;</div></pre></td></tr></table></figure></p>
+<h3 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a><strong>前缀索引</strong></h3><p>有时候需要索引很长的字符列，这会让索引变大且慢。通常可以索引开始的部分字符，这样可以大大节约索引空间，从而提高索引效率。但是这样也会降低索引的选择性。索引选择性是指，不重复的索引值(也称为基数，cardinality)和数据表的总记录数（#T）的比值，范围从1/#T到1之间。唯一索引的选择性是1，这是最好的索引选择性，性能也最好。</p>
+<p>当前缀的选择性越接近全列选择性的时候，索引效果越好。因此，对于前缀索引，找到合适长度的前缀是关键，我们可以这么计算全列选择性：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"># 全列选择性</div><div class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> column_name) / <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> table_name;</div><div class="line"># 测试某一长度前缀的选择性</div><div class="line"><span class="keyword">SELECT</span> <span class="keyword">COUNT</span>(<span class="keyword">DISTINCT</span> <span class="keyword">LEFT</span>(column_name, prefix_length)) / <span class="keyword">COUNT</span>(*) <span class="keyword">FROM</span> table_name;</div></pre></td></tr></table></figure></p>
+<p>找出合适的长度后建立前缀索引：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> table_name <span class="keyword">ADD</span> <span class="keyword">KEY</span>(column_name(prefix_length));</div></pre></td></tr></table></figure></p>
+<p>对于blog、text或者很长的varcharr类型列，必须使用前缀索引，因为MySQL不允许索引这些列的完成长度。前缀索引是一种能使索引更小更有效的方法，但是也有缺点：</p>
+<ul>
+<li>无法使用前缀索引做order by和group by</li>
+<li>无法使用前缀索引做覆盖扫描（后面会介绍覆盖索引）</li>
+</ul>
+<h3 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a><strong>覆盖索引</strong></h3><p>索引不且可以查询数据，还可以直接获取列的数据，因为索引的叶子节点已经包含要查询的数据，所以就不需要再读取数据行（也称回表操作）。如果索引包含（或者说覆盖）所有需要查询的字段的值，我们称之为覆盖索引。因为覆盖索引必须存储索引列的值，所以只有B-Tree索引能使用覆盖索引。举个例子，对于下面查询:<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">SELECT</span> col1,col2 <span class="keyword">FROM</span> t <span class="keyword">WHERE</span> col1 = <span class="number">1</span> <span class="keyword">AND</span> col2 = <span class="number">1</span></div></pre></td></tr></table></figure></p>
+<p>如果col1和col2列分别建立单列索引，是无法使用覆盖索引的，如果col1和col2列建立复合索引就可以使用覆盖索引</p>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a><strong>聚簇索引</strong></h3><p>聚簇索引，并不是一种单独的索引类型，而是一种数据存储方式。InnoDB的聚簇索引实际上在同一个结构中保存了B-Tree索引和数据行信息。因为无法把数据行存放在两个不同的地方，所以一个表只能有一个聚簇索引。这里主要讨论InnoDB引擎，InnoDB通过主键聚集数据，如果没有主键会选择一个非空的唯一索引，如果还没有，InnoDB会隐式定义一个主键来作为聚簇索引。因为索引和数据保存在同一个B-Tree中，所以聚簇索引通常比非聚簇索引查找更快。但是缺点也很明显，更新聚簇索引列的代价很高。篇幅有限，关于聚簇索引不详细展开</p>
+<h2 id="索引会失效常见场景"><a href="#索引会失效常见场景" class="headerlink" title="索引会失效常见场景"></a>索引会失效常见场景</h2><p>1.查询条件使用函数在索引列上，或者对索引列进行运算，运算包括(+，-，*，/，! 等)，导致索引失效</p>
+<p>错误的例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">id</span><span class="number">-1</span>=<span class="number">9</span></div></pre></td></tr></table></figure>
+<p>正确的例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">id</span>=<span class="number">10</span></div></pre></td></tr></table></figure>
+<p>2.使用不等于（!= 或者&lt;&gt;）导致索引失效，id&lt;&gt;3可使用id&gt;3 or id&lt;3来代替</p>
+<p>3.隐式转换导致索引失效，比如varchar类型的列num创建了索引，下面SQL索引失效<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">num</span>=<span class="number">10</span></div></pre></td></tr></table></figure></p>
+<p>正确写法：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">num</span>=<span class="string">'10'</span></div></pre></td></tr></table></figure>
+<p>4.like操作如果条件以通配符开始（比如常见的%，但要注意通配符并不是只有%），由于索引的前缀性导致索引失效</p>
+<p>错误例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">name</span> <span class="keyword">like</span> ‘%abc%，</div></pre></td></tr></table></figure>
+<p>正确例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">name</span> <span class="keyword">like</span> ‘abc%‘</div></pre></td></tr></table></figure>
+<p>5.join语句中join条件字段类型不一致的时候索引失效</p>
+<p>6.条件中有or导致索引失效（并不绝对，MySQL5.0及更高版本可以使用多列索引、或者优化器自己使用了索引合并策略）</p>
+<p>错误例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">num</span>=<span class="number">10</span> <span class="keyword">or</span> <span class="keyword">num</span>=<span class="number">20</span></div></pre></td></tr></table></figure>
+<p> 正确例子：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">num</span>=<span class="number">10</span> <span class="keyword">union</span> all <span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">num</span>=<span class="number">20</span></div></pre></td></tr></table></figure>
+<p>7.not in导致索引失效，可以用not exists代替</p>
+<p>8.如果在 where 子句中使用参数，也会导致全表扫描。因为SQL只有在运行时才会解析局部变量，但优化程序不能将访问计划的选择推迟到运行时；它必须在编译时进行选择。然而，如果在编译时建立访问计划，变量的值还是未知的，因而无法作为索引选择的输入项。如下面语句将进行全表扫描：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">where</span> <span class="keyword">num</span>=@<span class="keyword">num</span></div></pre></td></tr></table></figure></p>
+<p> 可以改为强制查询使用索引：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> t <span class="keyword">with</span>(<span class="keyword">index</span>(索引名)) <span class="keyword">where</span> <span class="keyword">num</span>=@<span class="keyword">num</span></div></pre></td></tr></table></figure></p>
+<p>9.is null不使用索引，因为索引不会包含null值，不会出现在索引树上，所以建表时尽量不要用null,可以用0等代替null值</p>
+<p>10.使用非等值查询的时候MySQL无法使用Hash索引</p>
+<h1 id="其他注意点"><a href="#其他注意点" class="headerlink" title="其他注意点"></a><strong>其他注意点</strong></h1><ol>
+<li>不要使用select * ，将*解析为对应的列需要额外操作，而且如果有排序操作的，会加载很多无用的列到内存，浪费资源，所以应该返回只需要的具体的列</li>
+<li>当只要一行数据时使用LIMIT 1，MySQL数据库引擎会在找到一条数据后停止搜索，而不是继续往后查少下一条符合记录的数据</li>
+</ol>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a><strong>参考</strong></h1><p>[1]《高性能MySQL》<br>[2] <a href="https://tech.meituan.com/mysql-index.html" target="_blank" rel="external">https://tech.meituan.com/mysql-index.html</a> </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/MySQL/" <i class="fa fa-tag"></i> MySQL</a>
+          
+            <a href="/tags/数据库优化/" <i class="fa fa-tag"></i> 数据库优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/14/MySQL优化系列之数据库schema设计优化/" rel="next" title="MySQL优化系列之数据库schema设计优化">
+                <i class="fa fa-chevron-left"></i> MySQL优化系列之数据库schema设计优化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/picture/avatar.jpg"
+               alt="吴清剑" />
+          <p class="site-author-name" itemprop="name">吴清剑</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/u014513883" target="_blank" title="CSDN博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+	  
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#分析你的SQL"><span class="nav-number">2.</span> <span class="nav-text">分析你的SQL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Explain查看SQL执行计划"><span class="nav-number">2.1.</span> <span class="nav-text">Explain查看SQL执行计划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#id"><span class="nav-number">2.1.1.</span> <span class="nav-text">id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#select-type"><span class="nav-number">2.1.2.</span> <span class="nav-text">select_type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#table"><span class="nav-number">2.1.3.</span> <span class="nav-text">table</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type"><span class="nav-number">2.1.4.</span> <span class="nav-text">type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#possible-keys"><span class="nav-number">2.1.5.</span> <span class="nav-text">possible_keys</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key"><span class="nav-number">2.1.6.</span> <span class="nav-text">key</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-len"><span class="nav-number">2.1.7.</span> <span class="nav-text">key_len</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref"><span class="nav-number">2.1.8.</span> <span class="nav-text">ref</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rows"><span class="nav-number">2.1.9.</span> <span class="nav-text">rows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#extra"><span class="nav-number">2.1.10.</span> <span class="nav-text">extra</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Profiling查看SQL查询性能"><span class="nav-number">2.2.</span> <span class="nav-text">Profiling查看SQL查询性能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-查看profile是否打开"><span class="nav-number">2.2.1.</span> <span class="nav-text">1.查看profile是否打开</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-当前会话开启profiling"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.当前会话开启profiling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-show-profiles"><span class="nav-number">2.2.3.</span> <span class="nav-text">3.show profiles</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-show-profile"><span class="nav-number">2.2.4.</span> <span class="nav-text">4.show profile</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#合理设计并利用索引"><span class="nav-number">3.</span> <span class="nav-text">合理设计并利用索引</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#索引类型"><span class="nav-number">3.1.</span> <span class="nav-text">索引类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-B-Tree索引"><span class="nav-number">3.1.1.</span> <span class="nav-text">1.B-Tree索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Hash索引"><span class="nav-number">3.1.2.</span> <span class="nav-text">2.Hash索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Full-Text索引"><span class="nav-number">3.1.3.</span> <span class="nav-text">3.Full-Text索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-R-Tree索引"><span class="nav-number">3.1.4.</span> <span class="nav-text">4.R-Tree索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引原理"><span class="nav-number">3.2.</span> <span class="nav-text">索引原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#详解B-树"><span class="nav-number">3.2.1.</span> <span class="nav-text">详解B+树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树的查找过程"><span class="nav-number">3.2.2.</span> <span class="nav-text">B+树的查找过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-树性质"><span class="nav-number">3.2.3.</span> <span class="nav-text">B+树性质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#何时创建索引"><span class="nav-number">3.3.</span> <span class="nav-text">何时创建索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#高性能索引策略"><span class="nav-number">3.4.</span> <span class="nav-text">高性能索引策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#独立的列"><span class="nav-number">3.4.1.</span> <span class="nav-text">独立的列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#前缀索引"><span class="nav-number">3.4.2.</span> <span class="nav-text">前缀索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#覆盖索引"><span class="nav-number">3.4.3.</span> <span class="nav-text">覆盖索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚簇索引"><span class="nav-number">3.4.4.</span> <span class="nav-text">聚簇索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引会失效常见场景"><span class="nav-number">3.5.</span> <span class="nav-text">索引会失效常见场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#其他注意点"><span class="nav-number">4.</span> <span class="nav-text">其他注意点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">吴清剑</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://wuqingjian.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://wuqingjian.org/2017/09/14/MySQL优化系列之查询优化/';
+          this.page.identifier = '2017/09/14/MySQL优化系列之查询优化/';
+          this.page.title = 'MySQL优化系列之查询优化';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://wuqingjian.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
