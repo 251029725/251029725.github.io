@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
+<meta property="og:type" content="article">
+<meta property="og:title" content="扩展阿里巴巴Java开发规约插件">
+<meta property="og:url" content="http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/index.html">
+<meta property="og:site_name" content="Wu.QingJian&#39;s Blog">
+<meta property="og:description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/emoji.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd1.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd2.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd3.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd4.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop1.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop2.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop3.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop4.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop5.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop6.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea1.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea2.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea3.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea4.jpg">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea5.jpg">
+<meta property="og:updated_time" content="2018-01-29T01:24:44.805Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="扩展阿里巴巴Java开发规约插件">
+<meta name="twitter:description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
+<meta name="twitter:image" content="http://wuqingjian.org/uploads/blog/pmd/emoji.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/"/>
+
+
+
+
+
+  <title>扩展阿里巴巴Java开发规约插件 | Wu.QingJian's Blog</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?5b2bb05dc48af776b444fcc26d967236";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Wu.QingJian's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Don't be moved by yourself</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="吴清剑">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Wu.QingJian's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">扩展阿里巴巴Java开发规约插件</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-29T09:24:29+08:00">
+                2018-01-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/01/29/扩展阿里巴巴Java开发规约插件/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count"
+                        data-disqus-identifier="2018/01/29/扩展阿里巴巴Java开发规约插件/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。</p>
+<p><img src="/uploads/blog/pmd/emoji.jpg" alt="emoji"></p>
+<p>代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！</p>
+<p>每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原因，加上没有code review，最后代码就写的千奇百怪了。原因就在于规范是有了，但是没人遵守。所以，编码规范需要强制执行，交给工具来强制执行。</p>
+<p>本文将通过介绍java静态代码检查工具PMD、阿里巴巴p3c开源项目到最后编写自定义编码规约来学习如何规范代码的编写。</p>
+<h1 id="PMD静态代码扫描"><a href="#PMD静态代码扫描" class="headerlink" title="PMD静态代码扫描"></a>PMD静态代码扫描</h1><h2 id="PMD官网"><a href="#PMD官网" class="headerlink" title="PMD官网"></a><a href="https://pmd.github.io/" target="_blank" rel="external">PMD官网</a></h2><h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>PMD是一种开源分析Java代码错误的工具。它通过静态分析获知代码错误。也就是说，在不运行Java程序的情况下报告错误。PMD附带了许多可以直接使用的规则，利用这些规则可以找出Java源程序的许多问题，例如：</p>
+<ul>
+<li>潜在的bug：空的try/catch/finally/switch语句</li>
+<li>未使用的代码：未使用的局部变量、参数、私有方法等</li>
+<li>可选的代码：String/StringBuffer的滥用</li>
+<li>复杂的表达式：不必须的if语句、可以使用while循环完成的for循环</li>
+<li>重复的代码：拷贝/粘贴代码意味着拷贝/粘贴bugs</li>
+<li>循环体创建新对象：尽量不要再for或while循环体内实例化一个新对象</li>
+<li>资源关闭：Connect，Result，Statement等使用之后确保关闭掉</li>
+</ul>
+<p>此外，用户还可以自己定义规则，检查Java代码是否符合某些特定的编码规范。例如，你可以编写一个规则，要求PMD找出所有创建Thread和Socket对象的操作。</p>
+<h2 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h2><p>PMD的核心是JavaCC解析器生成器。PMD结合运用JavaCC和EBNF（扩展巴科斯-诺尔范式，Extended Backus-Naur Formal）语法，再加上JJTree，把Java源代码解析成抽象语法树（AST，Abstract Syntax Tree）</p>
+<p>从根本上看，Java源代码只是一些普通的文本。不过，为了让解析器承认 这些普通的文本是合法的Java代码，它们必须符合某种特定的结构要求。这种结构可以用一种称为EBNF的句法元语言表示，通常称为“语法” （Grammar）。JavaCC根据语法要求生成解析器，这个解析器就可以用于解析用Java编程语言编写的程序。 </p>
+<h2 id="规则分类"><a href="#规则分类" class="headerlink" title="规则分类"></a>规则分类</h2><ul>
+<li>最佳实践：公认的最佳实践的规则。</li>
+<li>代码风格：这些规则强制执行特定的编码风格。</li>
+<li>设计：帮助您发现设计问题的规则。</li>
+<li>文档：这些规则与代码文档有关。</li>
+<li>容易出错的规则：用于检测被破坏的、非常混乱的或容易发生运行时错误的结构的规则。</li>
+<li>多线程：这些规则在处理多个执行线程时标记问题。</li>
+<li>性能：标记存在性能问题的代码的规则。</li>
+<li>安全：显示潜在安全缺陷的规则。</li>
+</ul>
+<h2 id="编写PMD自定义规则"><a href="#编写PMD自定义规则" class="headerlink" title="编写PMD自定义规则"></a>编写PMD自定义规则</h2><p><a href="https://pmd.github.io/pmd-5.4.1/customizing/howtowritearule.html" target="_blank" rel="external">How to write a PMD rule</a></p>
+<p><a href="https://testerhome.com/topics/4918" target="_blank" rel="external">静态代码扫描 (一)——PMD 自定义规则入门</a></p>
+<p><a href="http://www.w3school.com.cn/xpath/index.asp" target="_blank" rel="external">XPath教程</a></p>
+<h1 id="阿里巴巴Java开发规约插件p3c"><a href="#阿里巴巴Java开发规约插件p3c" class="headerlink" title="阿里巴巴Java开发规约插件p3c"></a>阿里巴巴Java开发规约插件p3c</h1><h2 id="GITHUB地址"><a href="#GITHUB地址" class="headerlink" title="GITHUB地址"></a><a href="https://github.com/alibaba/p3c" target="_blank" rel="external">GITHUB地址</a></h2><h2 id="概述-1"><a href="#概述-1" class="headerlink" title="概述"></a>概述</h2><p>阿里巴巴<code>p3c</code>项目包含三个部分：</p>
+<ul>
+<li>p3c-pmd，提供大部分规则实现，基于PMD框架开发，如果想实现自己的规则，可以基于该模块开发（该模块基于maven编译打包）</li>
+<li>IntelliJ IDEA插件，即idea-plugin模块（该模块基于gradle编译打包）</li>
+<li>Eclipse插件，即eclipse-plugin，本文不介绍</li>
+</ul>
+<h2 id="阿里编码规约IDEA插件使用"><a href="#阿里编码规约IDEA插件使用" class="headerlink" title="阿里编码规约IDEA插件使用"></a>阿里编码规约IDEA插件使用</h2><p><a href="https://github.com/alibaba/p3c/wiki/IDEA%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8%E6%96%87%E6%A1%A3" target="_blank" rel="external">传送门</a></p>
+<h1 id="基于p3c编写自定义编码规则"><a href="#基于p3c编写自定义编码规则" class="headerlink" title="基于p3c编写自定义编码规则"></a>基于p3c编写自定义编码规则</h1><h2 id="自定义规则"><a href="#自定义规则" class="headerlink" title="自定义规则"></a>自定义规则</h2><p>假设现在需要开发这么一个规则：方法请求参数列表不允许超过(含)5个</p>
+<h2 id="开发步骤"><a href="#开发步骤" class="headerlink" title="开发步骤"></a>开发步骤</h2><h3 id="1-找出问题代码，使用pmd图形化工具解析成抽象语法树"><a href="#1-找出问题代码，使用pmd图形化工具解析成抽象语法树" class="headerlink" title="1.找出问题代码，使用pmd图形化工具解析成抽象语法树"></a>1.找出问题代码，使用pmd图形化工具解析成抽象语法树</h3><p>代码示例：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> org.p3c.demo;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodA</span><span class="params">(<span class="keyword">int</span> a)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">methodB</span><span class="params">(<span class="keyword">int</span> a, <span class="keyword">int</span> b, <span class="keyword">int</span> c, <span class="keyword">int</span> d, <span class="keyword">int</span> e)</span> </span>&#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>将源码放入Source Code框，点击Go按钮，解析结果显示在左下框<br><img src="/uploads/blog/pmd/pmd1.jpg" alt="pmd1"></p>
+<h3 id="2-分析抽象语法树"><a href="#2-分析抽象语法树" class="headerlink" title="2.分析抽象语法树"></a>2.分析抽象语法树</h3><p>可以看到，整棵树的根节点是CompilationUnit，即编译单元，代表每个java源文件。我们首先要找到所有的方法声明，根据树节点名称大概也能看出来是MethodDeclaration，点击相应的节点，看看光标是否定位到源码方法声明位置。</p>
+<p>仔细分析MethodDeclaration节点，可以看到他有以下几个直接子节点：ResultType、MethodDeclarator、Block，即返回类型、方法声明、方法体<br><img src="/uploads/blog/pmd/pmd2.jpg" alt="pmd2"></p>
+<p>MethodDeclarator是我们想找的节点XPATH表达式可以这么写：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">//CompilationUnit//MethodDeclarator</div></pre></td></tr></table></figure>
+<p>验证表达式是否正确，将它写到PMD图形界面XPATH Query框中，点击Go按钮</p>
+<p><img src="/uploads/blog/pmd/pmd3.jpg" alt="pmd3"></p>
+<p>接下来，我们需要找到每个方法对应的参数列表，参数列表节点是方法节点的直接子节点，完整XPATH表达式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">//CompilationUnit//MethodDeclarator/FormalParameters</div></pre></td></tr></table></figure>
+<p><img src="/uploads/blog/pmd/pmd4.jpg" alt="pmd4"><br>获取到参数列表节点后，我们查看该节点的属性，找出参数个数的属性，观察可以发现是ParameterCount属性。</p>
+<p>到现在为止，抽象语法树已经分析完，我们知道这么找出代码中参数列表大于等于5个的方法了。</p>
+<h3 id="3-p3c-pmd项目编写自定义代码规则"><a href="#3-p3c-pmd项目编写自定义代码规则" class="headerlink" title="3.p3c-pmd项目编写自定义代码规则"></a>3.p3c-pmd项目编写自定义代码规则</h3><p>打开阿里p3c-pmd工程，开始编写我们的自定义规则。</p>
+<p>阿里已经写了很多规则，我们现在要编写的规则属于面向对象范畴，可以把规则写到opp包下，新建一个规则类MethodParameterCountRule，继承自AbstractAliRule，重写 visit方法：</p>
+<p><img src="/uploads/blog/pmd/oop1.jpg" alt="oop1"><br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> com.alibaba.p3c.pmd.lang.java.rule.oop;</div><div class="line"></div><div class="line"><span class="keyword">import</span> com.alibaba.p3c.pmd.lang.java.rule.AbstractAliRule;</div><div class="line"><span class="keyword">import</span> net.sourceforge.pmd.lang.ast.Node;</div><div class="line"><span class="keyword">import</span> net.sourceforge.pmd.lang.java.ast.ASTCompilationUnit;</div><div class="line"><span class="keyword">import</span> net.sourceforge.pmd.lang.java.ast.ASTFormalParameters;</div><div class="line"></div><div class="line"><span class="keyword">import</span> java.util.List;</div><div class="line"></div><div class="line"><span class="comment">/**</span></div><div class="line"><span class="comment"> * 方法参数列表个数不宜过长</span></div><div class="line"><span class="comment"> *</span></div><div class="line"><span class="comment"> * <span class="doctag">@auther</span> qingjian.wu</span></div><div class="line"><span class="comment"> * <span class="doctag">@create</span> 2018-01-27 14:59</span></div><div class="line"><span class="comment"> */</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MethodParameterCountRule</span> <span class="keyword">extends</span> <span class="title">AbstractAliRule</span></span>&#123;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String METHOD_XPATH = <span class="string">"//MethodDeclarator"</span>;</div><div class="line"></div><div class="line">   <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Integer PARAMETER_COUNT_LIMIT = <span class="number">5</span>;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">visit</span><span class="params">(ASTCompilationUnit node, Object data)</span> </span>&#123;</div><div class="line">        <span class="keyword">try</span> &#123;</div><div class="line">            <span class="comment">//找到所方法节点</span></div><div class="line">            List&lt;Node&gt; methodNodes = node.findChildNodesWithXPath(METHOD_XPATH);</div><div class="line">            <span class="keyword">if</span> (methodNodes != <span class="keyword">null</span> &amp;&amp; methodNodes.size() &gt; <span class="number">0</span>) &#123;</div><div class="line">                <span class="keyword">for</span> (Node methodNode : methodNodes) &#123;</div><div class="line">                    <span class="comment">//找到每个方法的参数列表声明</span></div><div class="line">                    List&lt;ASTFormalParameters&gt; formalParameters = methodNode.findChildrenOfType(ASTFormalParameters.class);</div><div class="line">                    <span class="keyword">if</span> (formalParameters.get(<span class="number">0</span>).getParameterCount() &gt;= PARAMETER_COUNT_LIMIT) &#123;</div><div class="line">                        <span class="comment">//违反规则提示信息，第二个参数是提示信息位置，第三个参数是提示信息key，第四个参数用来替换提示信息</span></div><div class="line">                        <span class="comment">// 中的占位符，这里获取的节点image属性就是方法名称</span></div><div class="line">                        addViolationWithMessage(data, methodNode,</div><div class="line">                                <span class="string">"java.oop.MethodParameterCountRule.violation.msg"</span>,</div><div class="line">                                <span class="keyword">new</span> Object[]&#123;methodNode.getImage()&#125;);</div><div class="line">                    &#125;</div><div class="line">                &#125;</div><div class="line">            &#125;</div><div class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">            e.printStackTrace();</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">return</span> <span class="keyword">super</span>.visit(node, data);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h3 id="4-p3c-pmd项目配置规则"><a href="#4-p3c-pmd项目配置规则" class="headerlink" title="4.p3c-pmd项目配置规则"></a>4.p3c-pmd项目配置规则</h3><p>将编写好规则配置到ali-oop.xml文件中</p>
+<p><img src="/uploads/blog/pmd/oop2.jpg" alt="oop2"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line">    &lt;rule name=&quot;MethodParameterCountRule&quot;</div><div class="line">          language=&quot;java&quot;</div><div class="line">          message=&quot;java.oop.MethodParameterCountRule.rule.msg&quot;</div><div class="line">          class=&quot;com.alibaba.p3c.pmd.lang.java.rule.oop.MethodParameterCountRule&quot;&gt;</div><div class="line">        &lt;!--级别，1强制，2推荐，3参考--&gt;</div><div class="line">        &lt;priority&gt;1&lt;/priority&gt;</div><div class="line"></div><div class="line">        &lt;example&gt;</div><div class="line">            &lt;![CDATA[</div><div class="line">Negative example:</div><div class="line">    public void methodB(int a, int b, int c, int d, int e) &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">]]&gt;</div><div class="line">        &lt;/example&gt;</div><div class="line">        &lt;example&gt;</div><div class="line">            &lt;![CDATA[</div><div class="line">Positive example:</div><div class="line">    public void methodA() &#123;</div><div class="line"></div><div class="line">    &#125;</div><div class="line">]]&gt;</div><div class="line">        &lt;/example&gt;</div><div class="line">    &lt;/rule&gt;</div></pre></td></tr></table></figure></p>
+<h3 id="5-p3c-pmd项目编写提示信息"><a href="#5-p3c-pmd项目编写提示信息" class="headerlink" title="5.p3c-pmd项目编写提示信息"></a>5.p3c-pmd项目编写提示信息</h3><p>上两步使用的提示信息和规则信息需要编写到message.xml配置文件中，message_en.xml中是英文提示，这里就先不演示了</p>
+<p><img src="/uploads/blog/pmd/oop3.jpg" alt="oop3"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"java.oop.MethodParameterCountRule.violation.msg"</span>&gt;</span></div><div class="line">    &lt;![CDATA[方法【%s】参数列表过长。 ]]&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></div><div class="line"><span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"java.oop.MethodParameterCountRule.rule.msg"</span>&gt;</span></div><div class="line">    &lt;![CDATA[说明：方法参数列表不允许超过（含）5个，建议封装到一个对象中。]]&gt;</div><div class="line"><span class="tag">&lt;/<span class="name">entry</span>&gt;</span></div></pre></td></tr></table></figure>
+<h3 id="6-单元测试"><a href="#6-单元测试" class="headerlink" title="6.单元测试"></a>6.单元测试</h3><p>编写测试样例，将要测试的源代码写到test目录对应的xml文件中<br><img src="/uploads/blog/pmd/oop4.jpg" alt="oop4"></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</div><div class="line"><span class="tag">&lt;<span class="name">test-data</span>&gt;</span></div><div class="line"></div><div class="line">	<span class="tag">&lt;<span class="name">code-fragment</span> <span class="attr">id</span>=<span class="string">"测试样例"</span>&gt;</span></div><div class="line">		&lt;![CDATA[</div><div class="line">	package org.p3c.demo;</div><div class="line"></div><div class="line">	public class Demo &#123;</div><div class="line"></div><div class="line">		public void methodA(int a) &#123;</div><div class="line"></div><div class="line">		&#125;</div><div class="line"></div><div class="line">		public void methodB(int a, int b, int c, int d, int e) &#123;</div><div class="line"></div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">		]]&gt;</div><div class="line">	<span class="tag">&lt;/<span class="name">code-fragment</span>&gt;</span></div><div class="line">	<span class="tag">&lt;<span class="name">test-code</span>&gt;</span></div><div class="line">		<span class="comment">&lt;!-- 预期问题个数 --&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">expected-problems</span>&gt;</span>0<span class="tag">&lt;/<span class="name">expected-problems</span>&gt;</span></div><div class="line">		<span class="tag">&lt;<span class="name">code-ref</span> <span class="attr">id</span>=<span class="string">"测试样例"</span> /&gt;</span></div><div class="line">	<span class="tag">&lt;/<span class="name">test-code</span>&gt;</span></div><div class="line"><span class="tag">&lt;/<span class="name">test-data</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>编写单元测试</p>
+<p><img src="/uploads/blog/pmd/oop5.jpg" alt="oop5"></p>
+<p>运行单元测试，因为样例代码中methodB不符合规范，但是我们预期问题个数写的是0，所以单元测试会不通过：<br><img src="/uploads/blog/pmd/oop6.jpg" alt="oop6"></p>
+<h2 id="配置插件"><a href="#配置插件" class="headerlink" title="配置插件"></a>配置插件</h2><h3 id="1-p3c-pmd打包安装到本地maven仓库"><a href="#1-p3c-pmd打包安装到本地maven仓库" class="headerlink" title="1.p3c-pmd打包安装到本地maven仓库"></a>1.p3c-pmd打包安装到本地maven仓库</h3><p>先把用不到的插件<code>maven-javadoc-plugin</code>和<code>maven-gpg-plugin</code>注释掉，然后运行mvn命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">mvn -DskipTests=true clean install</div></pre></td></tr></table></figure></p>
+<h3 id="2-idea-plugin项目打包插件"><a href="#2-idea-plugin项目打包插件" class="headerlink" title="2.idea-plugin项目打包插件"></a>2.idea-plugin项目打包插件</h3><p>idea-plugin项目基于gradle构建，配置根目录下build.gradle，让构建使用本地私有maven仓库构建</p>
+<p><img src="/uploads/blog/pmd/idea1.jpg" alt="idea1"></p>
+<p>然后运行开始gradle构建：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clean buildDependents build</div></pre></td></tr></table></figure></p>
+<p>打包成功后会在<code>idea-plugin\p3c-idea\build\distributions\</code>目录下生成<code>Alibaba Java Coding Guidelines-1.0.0.zip</code>文件，这个就是我们加入了自己拓展阿里开发规约的插件，IDEA中安装此插件</p>
+<p>Settings-&gt;Plugins-&gt;Install plugin from disk</p>
+<p><img src="/uploads/blog/pmd/idea2.jpg" alt="idea2"></p>
+<h3 id="3-IDEA中使用编码规约插件"><a href="#3-IDEA中使用编码规约插件" class="headerlink" title="3.IDEA中使用编码规约插件"></a>3.IDEA中使用编码规约插件</h3><p>安装完插件重启IDEA，用之前的代码测试下插件是否生效。<br>右键点击“编码规约扫描”</p>
+<p><img src="/uploads/blog/pmd/idea3.jpg" alt="idea3"></p>
+<p>结果：</p>
+<p><img src="/uploads/blog/pmd/idea4.jpg" alt="idea4"></p>
+<h1 id="Maven打包加入PMD校验"><a href="#Maven打包加入PMD校验" class="headerlink" title="Maven打包加入PMD校验"></a>Maven打包加入PMD校验</h1><p>到目前为止，我们已经做到了能在开发阶段实时校验自己的代码了，最后我们需要把规约检查加入到代码打包中，这样才能做到部署到生产环境的代码都是符合规范的，如果不符合规范，打包会失败。</p>
+<p>考虑到大多数项目使用maven管理，可以把自定义pmd规则整合到maven，这样就可以使用maven校验代码规则了</p>
+<p>在maven项目中加入pmd插件，配置插件在<code>package</code>阶段执行。通常我们的项目都有一个公共的父pom,那将插件加入到父pom中就行</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div></pre></td><td class="code"><pre><div class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></div><div class="line">        <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></div><div class="line">            <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-pmd-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line"></div><div class="line">                <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">rulesets</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-comment.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-concurrent.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-constant.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-exception.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-flowcontrol.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-naming.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-oop.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-orm.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-other.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">ruleset</span>&gt;</span>rulesets/java/ali-set.xml<span class="tag">&lt;/<span class="name">ruleset</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">rulesets</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">printFailingErrors</span>&gt;</span>true<span class="tag">&lt;/<span class="name">printFailingErrors</span>&gt;</span></div><div class="line">                    <span class="comment">&lt;!--扫描级别，小于等于这个级别的错误代码将不通过扫描。不配默认是5--&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">minimumPriority</span>&gt;</span>1<span class="tag">&lt;/<span class="name">minimumPriority</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">executions</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">execution</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">goals</span>&gt;</span></div><div class="line">                            <span class="tag">&lt;<span class="name">goal</span>&gt;</span>check<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></div><div class="line">                <span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.p3c<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>p3c-pmd<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></div><div class="line">                        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></div><div class="line">                    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></div><div class="line">                <span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></div><div class="line">            <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></div><div class="line">        <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></div><div class="line">    <span class="tag">&lt;/<span class="name">build</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>如果存在不符合规范代码打包将失败：</p>
+<p><img src="/uploads/blog/pmd/idea5.jpg" alt="idea5"></p>
+<p>关于maven pmd插件更详细介绍参考<a href="http://maven.apache.org/plugins/maven-pmd-plugin/pmd-mojo.html" target="_blank" rel="external">官网</a></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文篇幅确实有点长，看懂需要有点耐心。不过其实也挺简单，关键点就是分析抽象语法树，找出问题代码节点，剩下的工作就很简单了。</p>
+<p>PMD也有局限性，比如只能校验java源文件，对于XML等配置规约就没辙了。还有最最重要的，代码逻辑等关键性问题是没法校验的，也没法做。PMD只是一定程度上规范了我们的代码，要写出优雅的代码，还得多思考多实践呐。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/22/java.lang.UnsupportedOperationException问题探究/" rel="next" title="java.lang.UnsupportedOperationException问题探究">
+                <i class="fa fa-chevron-left"></i> java.lang.UnsupportedOperationException问题探究
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/picture/avatar.jpg"
+               alt="吴清剑" />
+          <p class="site-author-name" itemprop="name">吴清剑</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/u014513883" target="_blank" title="CSDN博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+	  
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#PMD静态代码扫描"><span class="nav-number">2.</span> <span class="nav-text">PMD静态代码扫描</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#PMD官网"><span class="nav-number">2.1.</span> <span class="nav-text">PMD官网</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概述"><span class="nav-number">2.2.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#工作原理"><span class="nav-number">2.3.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#规则分类"><span class="nav-number">2.4.</span> <span class="nav-text">规则分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写PMD自定义规则"><span class="nav-number">2.5.</span> <span class="nav-text">编写PMD自定义规则</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#阿里巴巴Java开发规约插件p3c"><span class="nav-number">3.</span> <span class="nav-text">阿里巴巴Java开发规约插件p3c</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#GITHUB地址"><span class="nav-number">3.1.</span> <span class="nav-text">GITHUB地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#概述-1"><span class="nav-number">3.2.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#阿里编码规约IDEA插件使用"><span class="nav-number">3.3.</span> <span class="nav-text">阿里编码规约IDEA插件使用</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#基于p3c编写自定义编码规则"><span class="nav-number">4.</span> <span class="nav-text">基于p3c编写自定义编码规则</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#自定义规则"><span class="nav-number">4.1.</span> <span class="nav-text">自定义规则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开发步骤"><span class="nav-number">4.2.</span> <span class="nav-text">开发步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-找出问题代码，使用pmd图形化工具解析成抽象语法树"><span class="nav-number">4.2.1.</span> <span class="nav-text">1.找出问题代码，使用pmd图形化工具解析成抽象语法树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-分析抽象语法树"><span class="nav-number">4.2.2.</span> <span class="nav-text">2.分析抽象语法树</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-p3c-pmd项目编写自定义代码规则"><span class="nav-number">4.2.3.</span> <span class="nav-text">3.p3c-pmd项目编写自定义代码规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-p3c-pmd项目配置规则"><span class="nav-number">4.2.4.</span> <span class="nav-text">4.p3c-pmd项目配置规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-p3c-pmd项目编写提示信息"><span class="nav-number">4.2.5.</span> <span class="nav-text">5.p3c-pmd项目编写提示信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-单元测试"><span class="nav-number">4.2.6.</span> <span class="nav-text">6.单元测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#配置插件"><span class="nav-number">4.3.</span> <span class="nav-text">配置插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-p3c-pmd打包安装到本地maven仓库"><span class="nav-number">4.3.1.</span> <span class="nav-text">1.p3c-pmd打包安装到本地maven仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-idea-plugin项目打包插件"><span class="nav-number">4.3.2.</span> <span class="nav-text">2.idea-plugin项目打包插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-IDEA中使用编码规约插件"><span class="nav-number">4.3.3.</span> <span class="nav-text">3.IDEA中使用编码规约插件</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Maven打包加入PMD校验"><span class="nav-number">5.</span> <span class="nav-text">Maven打包加入PMD校验</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">吴清剑</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://wuqingjian.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/';
+          this.page.identifier = '2018/01/29/扩展阿里巴巴Java开发规约插件/';
+          this.page.title = '扩展阿里巴巴Java开发规约插件';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://wuqingjian.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
