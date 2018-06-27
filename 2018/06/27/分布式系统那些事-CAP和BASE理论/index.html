@@ -90,7 +90,7 @@
 <link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="MySQL,Replication," />
+  <meta name="keywords" content="分布式," />
 
 
 
@@ -106,24 +106,20 @@
 
 
 
-<meta name="description" content="复制解决的问题1.备份容灾 不同备库分布在不用的地理位置，物理隔绝，可以用来备份数据和容灾 2.负载均衡 复制可以将多个读操作分布到不用的备库服务器，实现对读密集型应用的优化 3.高可用性能和故障切换 复制能避免MySQL单点故障，某个节点发生宕机，可以快速记性故障切换，提高系统高可用性 4.MySQL升级测试 这种做法较普遍，使用一个更高版本的MySQL作为备库，保证在升级全部实例前，查询能正">
-<meta name="keywords" content="MySQL,Replication">
+<meta name="description" content="CAP理论定义CAP定理（CAP theorem），又被称作布鲁尔定理（Brewer’s theorem），它指出对于一个分布式计算系统来说，不可能同时满足以下三点：  一致性（Consistence）   每次读取到的数据都是最近一次写的数据，等同于所有节点访问同一份最新的数据副本。  可用性（Availability）  每次请求都能在一定时间内获取到非错的响应——但是不保证获取的数据为最新">
+<meta name="keywords" content="分布式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MySQL Replication主从复制原理及拓扑结构">
-<meta property="og:url" content="http://wuqingjian.org/2017/09/11/MySQL Replication主从复制原理及拓扑结构/index.html">
+<meta property="og:title" content="分布式系统那些事-CAP和BASE理论">
+<meta property="og:url" content="http://wuqingjian.org/2018/06/27/分布式系统那些事-CAP和BASE理论/index.html">
 <meta property="og:site_name" content="Wu.QingJian&#39;s Blog">
-<meta property="og:description" content="复制解决的问题1.备份容灾 不同备库分布在不用的地理位置，物理隔绝，可以用来备份数据和容灾 2.负载均衡 复制可以将多个读操作分布到不用的备库服务器，实现对读密集型应用的优化 3.高可用性能和故障切换 复制能避免MySQL单点故障，某个节点发生宕机，可以快速记性故障切换，提高系统高可用性 4.MySQL升级测试 这种做法较普遍，使用一个更高版本的MySQL作为备库，保证在升级全部实例前，查询能正">
+<meta property="og:description" content="CAP理论定义CAP定理（CAP theorem），又被称作布鲁尔定理（Brewer’s theorem），它指出对于一个分布式计算系统来说，不可能同时满足以下三点：  一致性（Consistence）   每次读取到的数据都是最近一次写的数据，等同于所有节点访问同一份最新的数据副本。  可用性（Availability）  每次请求都能在一定时间内获取到非错的响应——但是不保证获取的数据为最新">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://img.blog.csdn.net/20170910125053554?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxNDUxMzg4Mw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/mysql/一主多从.png">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/mysql/双主复制-主动.png">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/mysql/双主复制-被动.png">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/mysql/级联复制.png">
-<meta property="og:updated_time" content="2017-09-11T15:17:09.196Z">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/cap/cap.png">
+<meta property="og:updated_time" content="2018-06-27T02:29:18.159Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MySQL Replication主从复制原理及拓扑结构">
-<meta name="twitter:description" content="复制解决的问题1.备份容灾 不同备库分布在不用的地理位置，物理隔绝，可以用来备份数据和容灾 2.负载均衡 复制可以将多个读操作分布到不用的备库服务器，实现对读密集型应用的优化 3.高可用性能和故障切换 复制能避免MySQL单点故障，某个节点发生宕机，可以快速记性故障切换，提高系统高可用性 4.MySQL升级测试 这种做法较普遍，使用一个更高版本的MySQL作为备库，保证在升级全部实例前，查询能正">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20170910125053554?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxNDUxMzg4Mw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta name="twitter:title" content="分布式系统那些事-CAP和BASE理论">
+<meta name="twitter:description" content="CAP理论定义CAP定理（CAP theorem），又被称作布鲁尔定理（Brewer’s theorem），它指出对于一个分布式计算系统来说，不可能同时满足以下三点：  一致性（Consistence）   每次读取到的数据都是最近一次写的数据，等同于所有节点访问同一份最新的数据副本。  可用性（Availability）  每次请求都能在一定时间内获取到非错的响应——但是不保证获取的数据为最新">
+<meta name="twitter:image" content="http://wuqingjian.org/uploads/blog/cap/cap.png">
 
 
 
@@ -153,13 +149,13 @@
 
 
 
-  <link rel="canonical" href="http://wuqingjian.org/2017/09/11/MySQL Replication主从复制原理及拓扑结构/"/>
+  <link rel="canonical" href="http://wuqingjian.org/2018/06/27/分布式系统那些事-CAP和BASE理论/"/>
 
 
 
 
 
-  <title>MySQL Replication主从复制原理及拓扑结构 | Wu.QingJian's Blog</title>
+  <title>分布式系统那些事-CAP和BASE理论 | Wu.QingJian's Blog</title>
   
 
 
@@ -316,7 +312,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wuqingjian.org/2017/09/11/MySQL Replication主从复制原理及拓扑结构/">
+    <link itemprop="mainEntityOfPage" href="http://wuqingjian.org/2018/06/27/分布式系统那些事-CAP和BASE理论/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="吴清剑">
@@ -333,7 +329,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">MySQL Replication主从复制原理及拓扑结构</h1>
+          <h1 class="post-title" itemprop="name headline">分布式系统那些事-CAP和BASE理论</h1>
         
 
         <div class="post-meta">
@@ -345,8 +341,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-11T23:12:06+08:00">
-                2017-09-11
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-27T09:24:29+08:00">
+                2018-06-27
               </time>
             
 
@@ -368,8 +364,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/MySQL/" itemprop="url" rel="index">
-                    <span itemprop="name">MySQL</span>
+                  <a href="/categories/分布式/" itemprop="url" rel="index">
+                    <span itemprop="name">分布式</span>
                   </a>
                 </span>
 
@@ -386,9 +382,9 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2017/09/11/MySQL Replication主从复制原理及拓扑结构/#comments" itemprop="discussionUrl">
+                <a href="/2018/06/27/分布式系统那些事-CAP和BASE理论/#comments" itemprop="discussionUrl">
                   <span class="post-comments-count disqus-comment-count"
-                        data-disqus-identifier="2017/09/11/MySQL Replication主从复制原理及拓扑结构/" itemprop="commentCount"></span>
+                        data-disqus-identifier="2018/06/27/分布式系统那些事-CAP和BASE理论/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -416,60 +412,54 @@
       
 
       
-        <script src="\assets\js\APlayer.min.js"> </script><h1 id="复制解决的问题"><a href="#复制解决的问题" class="headerlink" title="复制解决的问题"></a>复制解决的问题</h1><p>1.备份容灾</p>
-<p>不同备库分布在不用的地理位置，物理隔绝，可以用来备份数据和容灾</p>
-<p>2.负载均衡</p>
-<p>复制可以将多个读操作分布到不用的备库服务器，实现对读密集型应用的优化</p>
-<p>3.高可用性能和故障切换</p>
-<p>复制能避免MySQL单点故障，某个节点发生宕机，可以快速记性故障切换，提高系统高可用性</p>
-<p>4.MySQL升级测试</p>
-<p>这种做法较普遍，使用一个更高版本的MySQL作为备库，保证在升级全部实例前，查询能正常在其他备库上进行</p>
-<h1 id="复制如何工作"><a href="#复制如何工作" class="headerlink" title="复制如何工作"></a>复制如何工作</h1><p>复制有三个步骤：</p>
-<p>1.在主库上把更改记录到二进制日志（Binary Log）中（这些记录被称为二进制日志事件）</p>
-<p>2.备库将主库上的日志复制到自己的中继日志（Relay Log）中</p>
-<p>3.备库读取中继日志中的事件，将其重放到备库数据库</p>
-<p>下图更详细描述复制的细节：</p>
-<p><img src="http://img.blog.csdn.net/20170910125053554?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxNDUxMzg4Mw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="复制原理"></p>
-<p>第一步中，每次准备提交事务完成数据更新前，主库将数据更新的事件记录到二进制日志中，完了才会一起提交事务，所以不用担心数据更新了，但是二进制日志更新却失败的情况出现</p>
-<p>下一步，备库会启动一个I/O线程和主库建立连接，主库上启动一个特殊的二进制转储（binlog dump）线程读取二进制日志中的事件，备库I/O线程会将接收到的事件记录到中继日志中</p>
-<p>最后一步，备库的SQL线程重中继日志中读取事件并在备库上执行，从而实现数据更新</p>
-<h1 id="复制的原理"><a href="#复制的原理" class="headerlink" title="复制的原理"></a>复制的原理</h1><h2 id="基于语句的复制"><a href="#基于语句的复制" class="headerlink" title="基于语句的复制"></a>基于语句的复制</h2><p>在MySQL5.0及之前的版本只支持基于语句的复制（也称为逻辑复制）。这种复制模式下，主库会记录数据更改的语句，备库将这些更改语句再执行一遍完成复制，这样做有好处也有坏处</p>
-<p>好处：</p>
+        <script src="\assets\js\APlayer.min.js"> </script><h1 id="CAP理论"><a href="#CAP理论" class="headerlink" title="CAP理论"></a>CAP理论</h1><h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p><strong>CAP定理</strong>（CAP theorem），又被称作<strong>布鲁尔定理</strong>（Brewer’s theorem），它指出对于一个分布式计算系统来说，不可能同时满足以下三点：</p>
 <ul>
-<li>实现简单 </li>
-<li>节省带宽空间，一条更新好几兆数据的语句在一个二进制日志里可能只有几十个字节</li>
+<li><strong>一致性（Consistence</strong>） </li>
 </ul>
-<p>坏处：</p>
+<p>每次读取到的数据都是最近一次写的数据，等同于所有节点访问同一份最新的数据副本。</p>
 <ul>
-<li>存在无法被正确复制的SQL，比如获取当前时间戳、使用CURRENT_USER()函数的语句</li>
-<li>更新必须串行，这需要更多的锁</li>
+<li><strong>可用性（Availability</strong>）</li>
 </ul>
-<h2 id="基于行的复制"><a href="#基于行的复制" class="headerlink" title="基于行的复制"></a>基于行的复制</h2><p>MySQL5.1开始支持基于行的复制，这种方式会将实际数据记录在二进制日志中</p>
-<p>好处：</p>
+<p>每次请求都能在一定时间内获取到非错的响应——但是不保证获取的数据为最新数据。</p>
 <ul>
-<li>可以正确复制每一行，对于一些需要从大表查询结果汇总到小表的更新，如果更新行数很少，效率相对于基于语句的复制更高效</li>
+<li><strong>分区容错性（Partition tolerance）</strong></li>
 </ul>
-<p>坏处：</p>
+<p>分布式系统在遇到某节点或<strong>网络分区</strong>故障的时候，仍然需要能够保证对外提供满足一致性和可用性的服务。除了整个网络的故障外，其他的故障都不能导致整个系统无法正确响应。</p>
+<p><strong>注：</strong><br>网络分区（Network Partition） 并非节点 Crash，更侧重于 “节点双方一时联系不上对方” 的一个状态。造成网络分区的原因可能是网络不可达，也可能是GC的Stop The World阻塞太久，也可能是 CPU 彪到一个死循环上，更多原因参考 <a href="https://github.com/aphyr/partitions-post" target="_blank" rel="external">https://github.com/aphyr/partitions-post</a></p>
+<h2 id="CAP之间的取舍"><a href="#CAP之间的取舍" class="headerlink" title="CAP之间的取舍"></a>CAP之间的取舍</h2><ul>
+<li><strong>放弃分区容错性</strong></li>
+</ul>
+<p>为了避免分区容错性问题的发生，一种做法是将所有的数据（与事务相关的）都放在一台机器上。虽然无法100%保证系统不会出错，但不会碰到由分区带来的负面效果。但是，系统从分布式系统退化为单机系统，失去了可扩展性，严重影响系统规模。</p>
 <ul>
-<li>对于更新行数很大的更新，会使二进制日志事件非常庞大，给主库记录日志和备库复制增加额外的负载</li>
+<li><strong>放弃可用性</strong></li>
 </ul>
-<h1 id="复制拓扑结构"><a href="#复制拓扑结构" class="headerlink" title="复制拓扑结构"></a>复制拓扑结构</h1><p>可以在任意主库和备库之间建立复制，唯一的限制是每个备库只能有一个主库，这样一来，复制拓扑结构就非常多了，不同的拓扑结构只须遵循以下原则：</p>
+<p>相对于放弃“分区容错性“来说，其反面就是放弃可用性。一旦遇到分区容错故障，那么受到影响的服务需要等待一定的时间，因此在等待期间系统无法对外提供服务。</p>
 <ul>
-<li>一个备库只能有一个主库</li>
-<li>每个备库必须有一个唯一的服务器ID</li>
-<li>一个主库可以有多个备库</li>
-<li>一个备库可以把其主库上的数据变化传递到其他备库，需要log_slave_updates选项设置为1，即允许备库将其重放的事件也记录到自身的二进制日志中</li>
+<li><strong>放弃一致性</strong></li>
 </ul>
-<p>复制拓扑结构很多，下面介绍几种常见的</p>
-<h2 id="一主多备"><a href="#一主多备" class="headerlink" title="一主多备"></a>一主多备</h2><p><img src="/uploads/blog/mysql/一主多从.png" alt="一主多备"></p>
-<p>最简单的拓扑结构，再有少量写大量读的时候，可以通过读写分离减小负载。还有，可以将备库放到不同地理位置的机房，做数据备份容灾</p>
-<h2 id="主动-主动模式下的主-主复制"><a href="#主动-主动模式下的主-主复制" class="headerlink" title="主动-主动模式下的主-主复制"></a>主动-主动模式下的主-主复制</h2><p><img src="/uploads/blog/mysql/双主复制-主动.png" alt="双主复制-主动"></p>
-<p>主-主复制（也叫双主复制或双向复制），每一个都被配置成对方的主库和备库。该拓扑可能的应用场景是两个处于不同地理位置的办公室，并且都需要<strong>可写</strong>的数据拷贝。这种配置最大的问题是如何解决冲突，两个可写的互主服务器导致的问题非常多，通常发生在两天服务器同时修改同一行记录，或者同时向包含auto_increment列的表里插入数据，会造成两边数据不一致</p>
-<h2 id="主动-被动模式下的主-主复制"><a href="#主动-被动模式下的主-主复制" class="headerlink" title="主动-被动模式下的主-主复制"></a>主动-被动模式下的主-主复制</h2><p><img src="/uploads/blog/mysql/双主复制-被动.png" alt="双主复制-被动"></p>
-<p>和上一种主要区别在于其中一台服务器是只读的被动服务器。这种方式使得切换主动和被动服务器非常方便，因为服务器配置是对称的。这使得故障转移和故障恢复很容易。它也可以让你在不关闭服务器的情况下维护、优化表。</p>
-<h2 id="级联复制"><a href="#级联复制" class="headerlink" title="级联复制"></a>级联复制</h2><p><img src="/uploads/blog/mysql/级联复制.png" alt="级联复制"></p>
-<p>直接从属主库的备库太多时，连接到主库的I/O线程比较多，增大主库压力，它的缺点是中间层出现错误，会影响到多个服务器，中间层层次越多，故障处理越复杂</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] 《高性能MySQL》</p>
+<p>要高可用并允许分区，则需放弃一致性。一旦分区发生，节点之间可能会失去联系，为了高可用，每个节点只能用本地数据提供服务，而这样会导致全局数据的不一致性。现在众多的NoSQL都属于此类。当然，这里所说的放弃一致性，并不是完全放弃数据一致性，而是放弃数据的强一致性，而保留数据的最终一致性。</p>
+<p>下图展示了围绕CA、AP和CP构建的技术：</p>
+<p><img src="/uploads/blog/cap/cap.png" alt="cap"></p>
+<p>CAP定理并不意味着所有系统的设计都必须抛弃三个要素中的一个。三者可以在一定程度上衡量，并不是非黑即白，例如可用性从0%到100%有不同等级。</p>
+<h1 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>BASE理论是指，<strong>基本可用（Basically Available）</strong>、<strong>柔性状态（Soft State）</strong>、<strong>最终一致性（Eventual consistency）</strong>，是基于CAP定理演化而来，是对CAP中一致性和可用性权衡的结果。</p>
+<ul>
+<li><strong>基本可用（Basically Available）</strong></li>
+</ul>
+<p>基本可用，指分布式系统在出现故障的时候，允许损失部分可用性，保证核心可用。比如为了应对访问量激增，部分用户可能会被引导到降级页面，服务层可能也只提供降级服务。</p>
+<ul>
+<li><strong>柔性状态（Soft State）</strong></li>
+</ul>
+<p>允许系统存在中间状态，二中间状态不会影响系统整体可用性。如MySQL主从复制延迟就是柔性状态的提现。</p>
+<ul>
+<li><strong>最终一致性（Eventual consistency）</strong></li>
+</ul>
+<p>系统中的所有数据副本经过一定时间后，最终能够达到一致的状态。弱一致性和强一致性相反，最终一致性是弱一致性的一种特殊情况。</p>
+<h2 id="ACID和BASE的区别与联系"><a href="#ACID和BASE的区别与联系" class="headerlink" title="ACID和BASE的区别与联系"></a>ACID和BASE的区别与联系</h2><p>ACID和BASE代表了两种截然相反的设计哲学。ACID是传统数据库常用的设计理念，追求强一致性模型。BASE支持的是大型分布式系统，提出通过牺牲强一致性获得高可用性。</p>
+<p>在分布式系统设计的场景中，系统组件对一致性要求是不同的，因此ACID和BASE又会结合使用。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] <a href="http://www.hollischuang.com/archives/666" target="_blank" rel="external">分布式系统的CAP理论</a></p>
+<p>[2] <a href="http://www.cnblogs.com/hxsyl/p/4381980.html" target="_blank" rel="external">分布式系统之CAP理论</a></p>
+<p>[3] <a href="https://www.cnblogs.com/bangerlee/p/5328888.html" target="_blank" rel="external">分布式系统理论基础 - CAP</a></p>
+<p>[4] <a href="http://www.infoq.com/cn/articles/cap-twelve-years-later-how-the-rules-have-changed/" target="_blank" rel="external">CAP理论十二年回顾：”规则”变了</a></p>
 
       
     </div>
@@ -487,9 +477,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/MySQL/" <i class="fa fa-tag"></i> MySQL</a>
-          
-            <a href="/tags/Replication/" <i class="fa fa-tag"></i> Replication</a>
+            <a href="/tags/分布式/" <i class="fa fa-tag"></i> 分布式</a>
           
         </div>
       
@@ -502,8 +490,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/23/RabbitMQ消息监听程序异常问题探究/" rel="next" title="RabbitMQ消息监听程序异常问题探究">
-                <i class="fa fa-chevron-left"></i> RabbitMQ消息监听程序异常问题探究
+              <a href="/2018/01/29/扩展阿里巴巴Java开发规约插件/" rel="next" title="扩展阿里巴巴Java开发规约插件">
+                <i class="fa fa-chevron-left"></i> 扩展阿里巴巴Java开发规约插件
               </a>
             
           </div>
@@ -511,10 +499,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/09/11/MySQL Replication主从复制搭建/" rel="prev" title="MySQL Replication主从复制搭建">
-                MySQL Replication主从复制搭建 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -681,7 +665,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#复制解决的问题"><span class="nav-number">1.</span> <span class="nav-text">复制解决的问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制如何工作"><span class="nav-number">2.</span> <span class="nav-text">复制如何工作</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制的原理"><span class="nav-number">3.</span> <span class="nav-text">复制的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#基于语句的复制"><span class="nav-number">3.1.</span> <span class="nav-text">基于语句的复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基于行的复制"><span class="nav-number">3.2.</span> <span class="nav-text">基于行的复制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#复制拓扑结构"><span class="nav-number">4.</span> <span class="nav-text">复制拓扑结构</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一主多备"><span class="nav-number">4.1.</span> <span class="nav-text">一主多备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主动-主动模式下的主-主复制"><span class="nav-number">4.2.</span> <span class="nav-text">主动-主动模式下的主-主复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主动-被动模式下的主-主复制"><span class="nav-number">4.3.</span> <span class="nav-text">主动-被动模式下的主-主复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#级联复制"><span class="nav-number">4.4.</span> <span class="nav-text">级联复制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">5.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#CAP理论"><span class="nav-number">1.</span> <span class="nav-text">CAP理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义"><span class="nav-number">1.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAP之间的取舍"><span class="nav-number">1.2.</span> <span class="nav-text">CAP之间的取舍</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#BASE理论"><span class="nav-number">2.</span> <span class="nav-text">BASE理论</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义-1"><span class="nav-number">2.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ACID和BASE的区别与联系"><span class="nav-number">2.2.</span> <span class="nav-text">ACID和BASE的区别与联系</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#参考"><span class="nav-number">3.</span> <span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -827,9 +811,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://wuqingjian.org/2017/09/11/MySQL Replication主从复制原理及拓扑结构/';
-          this.page.identifier = '2017/09/11/MySQL Replication主从复制原理及拓扑结构/';
-          this.page.title = 'MySQL Replication主从复制原理及拓扑结构';
+          this.page.url = 'http://wuqingjian.org/2018/06/27/分布式系统那些事-CAP和BASE理论/';
+          this.page.identifier = '2018/06/27/分布式系统那些事-CAP和BASE理论/';
+          this.page.title = '分布式系统那些事-CAP和BASE理论';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://wuqingjian.disqus.com/embed.js';
