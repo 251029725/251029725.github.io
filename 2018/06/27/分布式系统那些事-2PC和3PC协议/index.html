@@ -116,8 +116,8 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://wuqingjian.org/uploads/blog/2pc/2PC-commit.jpg">
 <meta property="og:image" content="http://wuqingjian.org/uploads/blog/2pc/2PC-rollback.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/2pc/3pc.jpg">
-<meta property="og:updated_time" content="2018-06-27T14:05:30.674Z">
+<meta property="og:image" content="http://wuqingjian.org/uploads/blog/2pc/3PC.jpg">
+<meta property="og:updated_time" content="2018-07-04T05:58:49.168Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统那些事-2PC和3PC协议">
 <meta name="twitter:description" content="前言在分布式系统中，每个节点虽然都能明确知道自己事务操作结果是成功还是失败，但是无法直接获取到其他分布式节点的操作结果。因此，当一个事务操作需要跨越多个分布式节点的时候，为了保持事务处理的ACID特性，就需要引入一个称为“协调者（Coordinator）”的组件来统一调度所有的分布式节点的执行逻辑，这些被调度的节点称为“参与者（Participant）”。协调者负责调度参与者的行为，并最终决定这">
@@ -476,7 +476,7 @@
 </li>
 </ul>
 <h1 id="3PC协议"><a href="#3PC协议" class="headerlink" title="3PC协议"></a>3PC协议</h1><h2 id="协议说明-1"><a href="#协议说明-1" class="headerlink" title="协议说明"></a>协议说明</h2><p>3PC，是Three-Phase Commit的缩写，即三阶段提交，是2PC的改进版，将2PC的“提交事务请求”（即2PC第一阶段）过程一分为二，形成了由<code>canCommit</code>、<code>preCommit</code>、<code>doCommit</code>三阶段组成的事务处理协议。如下图所示：</p>
-<p><img src="/uploads/blog/2pc/3pc.jpg" alt="3PC"></p>
+<p><img src="/uploads/blog/2pc/3PC.jpg" alt="3PC"></p>
 <h3 id="阶段一：canCommit"><a href="#阶段一：canCommit" class="headerlink" title="阶段一：canCommit"></a>阶段一：canCommit</h3><ul>
 <li><p><strong>事务询问</strong></p>
 <p>  协调者向参与者发送canCommit请求。询问是否可以执行事务提交操作。然后开始等待参与者的响应。</p>
