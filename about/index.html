@@ -620,6 +620,30 @@
 
 
 
+   
+   
+   
+   
+   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+   
+       <script type="text/javascript">
+           function ShowGitment(){
+               document.getElementById("gitment-display-button").style.display = "none";
+               document.getElementById("gitment-container").style.display = "block";
+               var gitment = new Gitment({
+                   id: document.location.href, 
+                   owner: '251029725',
+                   repo: 'https://github.com/251029725/BlogComments.git',
+                   oauth: {
+                       client_id: '6b23971b9bc711ad8a77',
+                       client_secret: '0d6333feba0d533f1b1f9fdc4f57c39c8c9364ab',
+                   }});
+               gitment.render('gitment-container');
+           }
+       </script>
+   
+
   
 
 
