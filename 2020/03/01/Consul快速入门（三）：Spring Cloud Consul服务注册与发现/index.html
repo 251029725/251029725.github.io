@@ -1,0 +1,1416 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+<meta name="theme-color" content="#222">
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "3b93eacd"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Consul," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="1、前言本文通过创建provider-service、consumer-service两个微服务，并通过feign接口调用来演示Spring Cloud整合Consul。阅读本文需要前置知识：  Spring Boot Spring Cloud Spring Cloud Feign  2、搭建provider-service服务2.1、创建maven模块创建provider项目，添加provid">
+<meta name="keywords" content="Consul">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Consul快速入门（三）：Spring Cloud Consul服务注册与发现">
+<meta property="og:url" content="http://wuqingjian.org/2020/03/01/Consul快速入门（三）：Spring Cloud Consul服务注册与发现/index.html">
+<meta property="og:site_name" content="技术那些事">
+<meta property="og:description" content="1、前言本文通过创建provider-service、consumer-service两个微服务，并通过feign接口调用来演示Spring Cloud整合Consul。阅读本文需要前置知识：  Spring Boot Spring Cloud Spring Cloud Feign  2、搭建provider-service服务2.1、创建maven模块创建provider项目，添加provid">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-f9b4388122df448036326d948387df33bf1.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-8928cc8a0c339c5714a287ba1875796416f.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-ebe58bc8d5ba5608530c75d85b758cfa829.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-5ba54b7239a08a937a3223399aab0dd6c6d.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-8fefd4ad470f27bdfed475edb9d926dd5e7.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-f3798b8a34526a00db00b8f20ed6aa617a5.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-e184cdfcf25da49859ae6fc304f5cfd1b2a.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-e91e1d62d89134282c3576ce0503c4aa64d.png">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-e896f207c5ee8483ade4d7044d8655d94d5.png">
+<meta property="og:updated_time" content="2020-03-01T10:14:47.450Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Consul快速入门（三）：Spring Cloud Consul服务注册与发现">
+<meta name="twitter:description" content="1、前言本文通过创建provider-service、consumer-service两个微服务，并通过feign接口调用来演示Spring Cloud整合Consul。阅读本文需要前置知识：  Spring Boot Spring Cloud Spring Cloud Feign  2、搭建provider-service服务2.1、创建maven模块创建provider项目，添加provid">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-f9b4388122df448036326d948387df33bf1.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wuqingjian.org/2020/03/01/Consul快速入门（三）：Spring Cloud Consul服务注册与发现/"/>
+
+
+
+
+
+  <title>Consul快速入门（三）：Spring Cloud Consul服务注册与发现 | 技术那些事</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c7d800a042138aa6974195b2f5d4b83";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">技术那些事</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Don't be moved by yourself</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://wuqingjian.org/2020/03/01/Consul快速入门（三）：Spring Cloud Consul服务注册与发现/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="吴清剑">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="技术那些事">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Consul快速入门（三）：Spring Cloud Consul服务注册与发现</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-01T18:10:06+08:00">
+                2020-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Consul/" itemprop="url" rel="index">
+                    <span itemprop="name">Consul</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/03/01/Consul快速入门（三）：Spring Cloud Consul服务注册与发现/" class="leancloud_visitors" data-flag-title="Consul快速入门（三）：Spring Cloud Consul服务注册与发现">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,129字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  12分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><h1 id="1、前言"><a href="#1、前言" class="headerlink" title="1、前言"></a>1、前言</h1><p>本文通过创建provider-service、consumer-service两个微服务，并通过feign接口调用来演示Spring Cloud整合Consul。阅读本文需要前置知识：</p>
+<ul>
+<li>Spring Boot</li>
+<li>Spring Cloud</li>
+<li>Spring Cloud Feign</li>
+</ul>
+<h1 id="2、搭建provider-service服务"><a href="#2、搭建provider-service服务" class="headerlink" title="2、搭建provider-service服务"></a>2、搭建provider-service服务</h1><h2 id="2-1、创建maven模块"><a href="#2-1、创建maven模块" class="headerlink" title="2.1、创建maven模块"></a>2.1、创建maven模块</h2><p>创建provider项目，添加provider-service、provider-service-remote-api两个maven模块：</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-f9b4388122df448036326d948387df33bf1.png" alt="provider-module.png"></p>
+<h2 id="2-2、添加spring-boot、spring-cloud依赖"><a href="#2-2、添加spring-boot、spring-cloud依赖" class="headerlink" title="2.2、添加spring boot、spring cloud依赖"></a>2.2、添加spring boot、spring cloud依赖</h2><p>在父模块provider中添加spring boot、spring cloud依赖<br>，spring cloud使用截止当前最新版本Hoxton.SR1，关联spring boot版本2.2.2.RELEASE</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">&lt;properties&gt;</div><div class="line">    &lt;java.version&gt;1.8&lt;/java.version&gt;</div><div class="line">    &lt;spring-cloud.version&gt;Hoxton.SR1&lt;/spring-cloud.version&gt;</div><div class="line">&lt;/properties&gt;</div><div class="line"></div><div class="line">&lt;parent&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter-parent&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;2.2.2.RELEASE&lt;/version&gt;</div><div class="line">    &lt;relativePath/&gt; &lt;!-- lookup parent from repository --&gt;</div><div class="line">&lt;/parent&gt;</div><div class="line"></div><div class="line">&lt;dependencyManagement&gt;</div><div class="line">    &lt;dependencies&gt;</div><div class="line">        &lt;dependency&gt;</div><div class="line">            &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">            &lt;artifactId&gt;spring-cloud-dependencies&lt;/artifactId&gt;</div><div class="line">            &lt;version&gt;$&#123;spring-cloud.version&#125;&lt;/version&gt;</div><div class="line">            &lt;type&gt;pom&lt;/type&gt;</div><div class="line">            &lt;scope&gt;import&lt;/scope&gt;</div><div class="line">        &lt;/dependency&gt;</div><div class="line">    &lt;/dependencies&gt;</div><div class="line">&lt;/dependencyManagement&gt;</div></pre></td></tr></table></figure>
+<p><strong>注意</strong>：spring boot和spring cloud之间有版本依赖关系，如果想用其他版本，请自行查询对应的依赖版本，否则可能由于不兼容服务起不来</p>
+<h2 id="2-3、provider-service-remote-api模块编写feign接口"><a href="#2-3、provider-service-remote-api模块编写feign接口" class="headerlink" title="2.3、provider-service-remote-api模块编写feign接口"></a>2.3、provider-service-remote-api模块编写feign接口</h2><p>maven模块provider-service-remote-api引入spring cloud feign</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;dependencies&gt;</div><div class="line">    &lt;dependency&gt;</div><div class="line">        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;spring-cloud-starter-openfeign&lt;/artifactId&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line">&lt;/dependencies&gt;</div></pre></td></tr></table></figure>
+<p>代码编写，新建IProviderRemoteService接口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">@FeignClient(name = &quot;provider-service&quot;)</div><div class="line">public interface IProviderRemoteService &#123;</div><div class="line"></div><div class="line">    @RequestMapping(value = &quot;hello&quot;, method = RequestMethod.GET)</div><div class="line">    String hello();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-4、provider-service模块编写接口实现"><a href="#2-4、provider-service模块编写接口实现" class="headerlink" title="2.4、provider-service模块编写接口实现"></a>2.4、provider-service模块编写接口实现</h2><p>maven依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;com.example&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;provider-service-remote-api&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>接口实现类ProviderRemoteService</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">@RestController</div><div class="line">public class ProviderRemoteService implements IProviderRemoteService &#123;</div><div class="line"></div><div class="line">    @Override</div><div class="line">    public String hello() &#123;</div><div class="line">        return &quot;hello world!&quot;;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="2-5、集成spring-cloud-consul"><a href="#2-5、集成spring-cloud-consul" class="headerlink" title="2.5、集成spring cloud consul"></a>2.5、集成spring cloud consul</h2><p>引入spring cloud consul模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>application.yml添加consul配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">server:</div><div class="line">  port: 8080</div><div class="line">spring:</div><div class="line">  application:</div><div class="line">    name: provider-service</div><div class="line">  cloud:</div><div class="line">    consul:</div><div class="line">      host: 127.0.0.1</div><div class="line">      port: 8500</div><div class="line">      discovery:</div><div class="line">        heartbeat:</div><div class="line">          enabled: true</div></pre></td></tr></table></figure>
+<p>启动类添加<code>@EnableDiscoveryClient</code>注解，启用服务发现功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableDiscoveryClient</div><div class="line">public class Application &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        SpringApplication.run(Application.class, args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到此，provider-service服务已经全部搭建完毕，完整项目结构：</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-8928cc8a0c339c5714a287ba1875796416f.png" alt="provider-service.png"></p>
+<h1 id="3、搭建consumer-service服务"><a href="#3、搭建consumer-service服务" class="headerlink" title="3、搭建consumer-service服务"></a>3、搭建consumer-service服务</h1><h2 id="3-1、创建maven模块"><a href="#3-1、创建maven模块" class="headerlink" title="3.1、创建maven模块"></a>3.1、创建maven模块</h2><p>创建consumer项目，添加consumer-service，因为该服务不需要对外提供接口，所以无需consumer-service-remote-api模块：<br><img src="https://oscimg.oschina.net/oscnet/up-ebe58bc8d5ba5608530c75d85b758cfa829.png" alt="consumer-module.png"></p>
+<h2 id="3-2、consumer-service编写接口调用provider-service服务"><a href="#3-2、consumer-service编写接口调用provider-service服务" class="headerlink" title="3.2、consumer-service编写接口调用provider-service服务"></a>3.2、consumer-service编写接口调用provider-service服务</h2><p>引用provider-service-remote-api</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;com.example&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;provider-service-remote-api&lt;/artifactId&gt;</div><div class="line">    &lt;version&gt;0.0.1-SNAPSHOT&lt;/version&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>编写测试接口，通过feign调用provider-service服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">@RestController</div><div class="line">public class ConsumerController &#123;</div><div class="line"></div><div class="line">    @Autowired</div><div class="line">    private IProviderRemoteService providerRemoteService;</div><div class="line"></div><div class="line">    @RequestMapping(value = &quot;/test&quot;)</div><div class="line">    public String test() &#123;</div><div class="line">        return providerRemoteService.hello();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h2 id="3-3、集成spring-cloud-consul"><a href="#3-3、集成spring-cloud-consul" class="headerlink" title="3.3、集成spring cloud consul"></a>3.3、集成spring cloud consul</h2><p>同provider-service服务一样，引入spring cloud consul模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;dependency&gt;</div><div class="line">    &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;</div><div class="line">    &lt;artifactId&gt;spring-cloud-starter-consul-discovery&lt;/artifactId&gt;</div><div class="line">&lt;/dependency&gt;</div></pre></td></tr></table></figure>
+<p>application.yml添加consul配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">server:</div><div class="line">  port: 9090</div><div class="line">spring:</div><div class="line">  application:</div><div class="line">    name: consumer-service</div><div class="line">  cloud:</div><div class="line">    consul:</div><div class="line">      host: 127.0.0.1</div><div class="line">      port: 8500</div><div class="line">      discovery:</div><div class="line">        heartbeat:</div><div class="line">          enabled: true</div></pre></td></tr></table></figure>
+<p>启动类添加<code>@EnableDiscoveryClient</code>注解，启用服务发现功能，并添加<code>@EnableFeignClients</code>注解，启用feign功能</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">@SpringBootApplication</div><div class="line">@EnableDiscoveryClient</div><div class="line">@EnableFeignClients</div><div class="line">public class Application &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) &#123;</div><div class="line">        SpringApplication.run(Application.class, args);</div><div class="line">    &#125;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>到此，consumer-service服务也搭建完成，完整项目结构：</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-5ba54b7239a08a937a3223399aab0dd6c6d.png" alt="consumer-service.png"></p>
+<h1 id="4、测试"><a href="#4、测试" class="headerlink" title="4、测试"></a>4、测试</h1><h2 id="4-1、启动consul服务"><a href="#4-1、启动consul服务" class="headerlink" title="4.1、启动consul服务"></a>4.1、启动consul服务</h2><p>为了便于测试，笔者在本机以开发者模式起了一个consul服务</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div></pre></td><td class="code"><pre><div class="line">D:\consul&gt;consul agent -dev</div><div class="line">==&gt; Starting Consul agent...</div><div class="line">           Version: &apos;v1.7.0&apos;</div><div class="line">           Node ID: &apos;c43eedeb-f211-dbf2-e3fa-3caa64f86ddb&apos;</div><div class="line">         Node name: &apos;DESKTOP-77V3R9P&apos;</div><div class="line">        Datacenter: &apos;dc1&apos; (Segment: &apos;&lt;all&gt;&apos;)</div><div class="line">            Server: true (Bootstrap: false)</div><div class="line">       Client Addr: [127.0.0.1] (HTTP: 8500, HTTPS: -1, gRPC: 8502, DNS: 8600)</div><div class="line">      Cluster Addr: 127.0.0.1 (LAN: 8301, WAN: 8302)</div><div class="line">           Encrypt: Gossip: false, TLS-Outgoing: false, TLS-Incoming: false, Auto-Encrypt-TLS: false</div><div class="line"></div><div class="line">==&gt; Log data will now stream in as it occurs:</div><div class="line"></div><div class="line">    2020-02-22T15:34:07.878+0800 [DEBUG] agent: Using random ID as node ID: id=c43eedeb-f211-dbf2-e3fa-3caa64f86ddb</div><div class="line">    2020-02-22T15:34:07.900+0800 [DEBUG] agent.tlsutil: Update: version=1</div><div class="line">    2020-02-22T15:34:07.914+0800 [DEBUG] agent.tlsutil: OutgoingRPCWrapper: version=1</div><div class="line">    2020-02-22T15:34:07.916+0800 [INFO]  agent.server.raft: initial configuration: index=1 servers=&quot;[&#123;Suffrage:Voter ID:c43eedeb-f211-dbf2-e3fa-3caa64f86ddb Address:127.0.0.1:8300&#125;]&quot;</div><div class="line">    2020-02-22T15:34:07.916+0800 [INFO]  agent.server.raft: entering follower state: follower=&quot;Node at 127.0.0.1:8300 [Follower]&quot; leader=</div><div class="line">    2020-02-22T15:34:07.919+0800 [INFO]  agent.server.serf.wan: serf: EventMemberJoin: DESKTOP-77V3R9P.dc1 127.0.0.1</div><div class="line">    2020-02-22T15:34:07.920+0800 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: DESKTOP-77V3R9P 127.0.0.1</div><div class="line">    2020-02-22T15:34:07.920+0800 [INFO]  agent.server: Adding LAN server: server=&quot;DESKTOP-77V3R9P (Addr: tcp/127.0.0.1:8300) (DC: dc1)&quot;</div><div class="line">    2020-02-22T15:34:07.921+0800 [INFO]  agent.server: Handled event for server in area: event=member-join server=DESKTOP-77V3R9P.dc1 area=wan</div><div class="line">    2020-02-22T15:34:07.921+0800 [INFO]  agent: Started DNS server: address=127.0.0.1:8600 network=udp</div><div class="line">    2020-02-22T15:34:07.923+0800 [INFO]  agent: Started DNS server: address=127.0.0.1:8600 network=tcp</div><div class="line">    2020-02-22T15:34:07.926+0800 [INFO]  agent: Started HTTP server: address=127.0.0.1:8500 network=tcp</div><div class="line">    2020-02-22T15:34:07.928+0800 [INFO]  agent: started state syncer</div><div class="line">==&gt; Consul agent running!</div><div class="line">...</div></pre></td></tr></table></figure>
+<h2 id="4-2、启动服务注册到consul"><a href="#4-2、启动服务注册到consul" class="headerlink" title="4.2、启动服务注册到consul"></a>4.2、启动服务注册到consul</h2><p>分别启动provider-service服务和consumer-service服务，访问consul的Web UI界面可以看到两个服务都注册上来了：</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-8fefd4ad470f27bdfed475edb9d926dd5e7.png" alt="consul-services.png"></p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-f3798b8a34526a00db00b8f20ed6aa617a5.png" alt="consul-nodes.png"></p>
+<h3 id="4-3、调用测试接口"><a href="#4-3、调用测试接口" class="headerlink" title="4.3、调用测试接口"></a>4.3、调用测试接口</h3><p>调用consumer-service测试接口<a href="http://127.0.0.1:9090/test" target="_blank" rel="external">http://127.0.0.1:9090/test</a></p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-e184cdfcf25da49859ae6fc304f5cfd1b2a.png" alt="invoke.png"></p>
+<p>现在尝试把provider服务停止，consul注册中心可以看到健康检查状态为<code>Critical</code>，服务已经下线</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-e91e1d62d89134282c3576ce0503c4aa64d.png" alt="`critical.png"></p>
+<p>此时，再次调用consumer-service测试接口，会报找不到服务</p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-e896f207c5ee8483ade4d7044d8655d94d5.png" alt="service not found.ong"></p>
+<h1 id="5、Spring-Cloud-Consul应用配置"><a href="#5、Spring-Cloud-Consul应用配置" class="headerlink" title="5、Spring Cloud Consul应用配置"></a>5、Spring Cloud Consul应用配置</h1><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>spring.cloud.consul.config.acl-token</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.data-key</td>
+<td>data</td>
+<td>If format is Format.PROPERTIES or Format.YAML then the following field is used as key to look up consul for configuration.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.default-context</td>
+<td>application</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.enabled</td>
+<td>TRUE</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.fail-fast</td>
+<td>TRUE</td>
+<td>Throw exceptions during config lookup if true, otherwise, log warnings.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.format</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.name</td>
+<td></td>
+<td>Alternative to spring.application.name to use in looking up values in consul KV.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.prefix</td>
+<td>config</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.profile-separator</td>
+<td>,</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.watch.delay</td>
+<td>1000</td>
+<td>The value of the fixed delay for the watch in millis. Defaults to 1000.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.watch.enabled</td>
+<td>TRUE</td>
+<td>If the watch is enabled. Defaults to true.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.config.watch.wait-time</td>
+<td>55</td>
+<td>The number of seconds to wait (or block) for watch query, defaults to 55. Needs to be less than default ConsulClient (defaults to 60). To increase ConsulClient timeout create a ConsulClient bean with a custom ConsulRawClient with a custom HttpClient.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.acl-token</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.catalog-services-watch-delay</td>
+<td>1000</td>
+<td>The delay between calls to watch consul catalog in millis, default is 1000.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.catalog-services-watch-timeout</td>
+<td>2</td>
+<td>The number of seconds to block while watching consul catalog, default is 2.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.consistency-mode</td>
+<td></td>
+<td>Consistency mode for health service request.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.datacenters</td>
+<td></td>
+<td>Map of serviceId’s → datacenter to query for in server list. This allows looking up services in another datacenters.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.default-query-tag</td>
+<td></td>
+<td>Tag to query for in service list if one is not listed in serverListQueryTags.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.default-zone-metadata-name</td>
+<td>zone</td>
+<td>Service instance zone comes from metadata. This allows changing the metadata tag name.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.deregister</td>
+<td>TRUE</td>
+<td>Disable automatic de-registration of service in consul.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.enabled</td>
+<td>TRUE</td>
+<td>Is service discovery enabled?</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.fail-fast</td>
+<td>TRUE</td>
+<td>Throw exceptions during service registration if true, otherwise, log warnings (defaults to true).</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-critical-timeout</td>
+<td></td>
+<td>Timeout to deregister services critical for longer than timeout (e.g. 30m). Requires consul version 7.x or higher.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-headers</td>
+<td></td>
+<td>Headers to be applied to the Health Check calls.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-interval</td>
+<td>10s</td>
+<td>How often to perform the health check (e.g. 10s), defaults to 10s.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-path</td>
+<td>/actuator/health</td>
+<td>Alternate server path to invoke for health checking.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-timeout</td>
+<td></td>
+<td>Timeout for health check (e.g. 10s).</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-tls-skip-verify</td>
+<td></td>
+<td>Skips certificate verification during service checks if true, otherwise runs certificate verification.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.health-check-url</td>
+<td></td>
+<td>Custom health check url to override default.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.heartbeat.enabled</td>
+<td>FALSE</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.heartbeat.interval-ratio</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.heartbeat.ttl</td>
+<td>30s</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.hostname</td>
+<td></td>
+<td>Hostname to use when accessing server.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.include-hostname-in-instance-id</td>
+<td>FALSE</td>
+<td>Whether hostname is included into the default instance id when registering service.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.instance-group</td>
+<td></td>
+<td>Service instance group.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.instance-id</td>
+<td></td>
+<td>Unique service instance id.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.instance-zone</td>
+<td></td>
+<td>Service instance zone.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.ip-address</td>
+<td></td>
+<td>IP address to use when accessing service (must also set preferIpAddress to use).</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.lifecycle.enabled</td>
+<td>TRUE</td>
+<td></td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.management-port</td>
+<td></td>
+<td>Port to register the management service under (defaults to management port).</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.management-suffix</td>
+<td>management</td>
+<td>Suffix to use when registering management service.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.management-tags</td>
+<td></td>
+<td>Tags to use when registering management service.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.order</td>
+<td>0</td>
+<td>Order of the discovery client used by?CompositeDiscoveryClient?for sorting available clients.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.port</td>
+<td></td>
+<td>Port to register the service under (defaults to listening port).</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.prefer-agent-address</td>
+<td>FALSE</td>
+<td>Source of how we will determine the address to use.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.prefer-ip-address</td>
+<td>FALSE</td>
+<td>Use ip address rather than hostname during registration.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.query-passing</td>
+<td>FALSE</td>
+<td>Add the ‘passing` parameter to /v1/health/service/serviceName. This pushes health check passing to the server.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.register</td>
+<td>TRUE</td>
+<td>Register as a service in consul.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.register-health-check</td>
+<td>TRUE</td>
+<td>Register health check in consul. Useful during development of a service.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.scheme</td>
+<td>http</td>
+<td>Whether to register an http or https service.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.server-list-query-tags</td>
+<td></td>
+<td>Map of serviceId’s → tag to query for in server list. This allows filtering services by a single tag.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.service-name</td>
+<td></td>
+<td>Service name.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.discovery.tags</td>
+<td></td>
+<td>Tags to use when registering service.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.enabled</td>
+<td>TRUE</td>
+<td>Is spring cloud consul enabled.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.host</td>
+<td>localhost</td>
+<td>Consul agent hostname. Defaults to ‘localhost’.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.port</td>
+<td>8500</td>
+<td>Consul agent port. Defaults to ‘8500’.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.retry.initial-interval</td>
+<td>1000</td>
+<td>Initial retry interval in milliseconds.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.retry.max-attempts</td>
+<td>6</td>
+<td>Maximum number of attempts.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.retry.max-interval</td>
+<td>2000</td>
+<td>Maximum interval for backoff.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.retry.multiplier</td>
+<td>1.1</td>
+<td>Multiplier for next interval.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.scheme</td>
+<td></td>
+<td>Consul agent scheme (HTTP/HTTPS). If there is no scheme in address - client will use HTTP.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.tls.certificate-password</td>
+<td></td>
+<td>Password to open the certificate.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.tls.certificate-path</td>
+<td></td>
+<td>File path to the certificate.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.tls.key-store-instance-type</td>
+<td></td>
+<td>Type of key framework to use.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.tls.key-store-password</td>
+<td></td>
+<td>Password to an external keystore.</td>
+</tr>
+<tr>
+<td>spring.cloud.consul.tls.key-store-path</td>
+<td></td>
+<td>Path to an external keystore.</td>
+</tr>
+</tbody>
+</table>
+<p>来源官网：<a href="https://cloud.spring.io/spring-cloud-consul/reference/html/appendix.html" target="_blank" rel="external">https://cloud.spring.io/spring-cloud-consul/reference/html/appendix.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Consul/" <i class="fa fa-tag"></i> Consul</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/01/Consul快速入门（二）：Consul安装运行/" rel="next" title="Consul快速入门（二）：Consul安装运行">
+                <i class="fa fa-chevron-left"></i> Consul快速入门（二）：Consul安装运行
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+       
+         <div id="gitment-container"></div>
+       
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/picture/avatar.jpg"
+               alt="吴清剑" />
+          <p class="site-author-name" itemprop="name">吴清剑</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/u014513883" target="_blank" title="CSDN博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+	  
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1、前言"><span class="nav-number">1.</span> <span class="nav-text">1、前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、搭建provider-service服务"><span class="nav-number">2.</span> <span class="nav-text">2、搭建provider-service服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1、创建maven模块"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、创建maven模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2、添加spring-boot、spring-cloud依赖"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、添加spring boot、spring cloud依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3、provider-service-remote-api模块编写feign接口"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、provider-service-remote-api模块编写feign接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4、provider-service模块编写接口实现"><span class="nav-number">2.4.</span> <span class="nav-text">2.4、provider-service模块编写接口实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5、集成spring-cloud-consul"><span class="nav-number">2.5.</span> <span class="nav-text">2.5、集成spring cloud consul</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、搭建consumer-service服务"><span class="nav-number">3.</span> <span class="nav-text">3、搭建consumer-service服务</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1、创建maven模块"><span class="nav-number">3.1.</span> <span class="nav-text">3.1、创建maven模块</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2、consumer-service编写接口调用provider-service服务"><span class="nav-number">3.2.</span> <span class="nav-text">3.2、consumer-service编写接口调用provider-service服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3、集成spring-cloud-consul"><span class="nav-number">3.3.</span> <span class="nav-text">3.3、集成spring cloud consul</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、测试"><span class="nav-number">4.</span> <span class="nav-text">4、测试</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1、启动consul服务"><span class="nav-number">4.1.</span> <span class="nav-text">4.1、启动consul服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2、启动服务注册到consul"><span class="nav-number">4.2.</span> <span class="nav-text">4.2、启动服务注册到consul</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3、调用测试接口"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.3、调用测试接口</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5、Spring-Cloud-Consul应用配置"><span class="nav-number">5.</span> <span class="nav-text">5、Spring Cloud Consul应用配置</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">吴清剑</span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">
+      27.7k
+    </span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+   
+       <script type="text/javascript">
+           var gitment = new Gitment({
+               id: 'Consul快速入门（三）：Spring Cloud Consul服务注册与发现', 
+               owner: '251029725',
+               repo: 'BlogComments',
+               oauth: {
+                   client_id: '6b23971b9bc711ad8a77',
+                   client_secret: '0d6333feba0d533f1b1f9fdc4f57c39c8c9364ab',
+               }});
+           gitment.render('gitment-container');
+       </script>
+   
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("IzANThQbGgh3xlT9QzywaftY-gzGzoHsz", "mhjhCxSUcSqsyOPbiKdNQ5Tv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
