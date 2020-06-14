@@ -48,7 +48,7 @@
 
   
   
-  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+  <link href="/blog/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
 
 
 
@@ -94,9 +94,9 @@
 
 
 
-<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+<link href="/blog/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
 
-<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+<link href="/blog/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
 
 
   <meta name="keywords" content="RabbitMQ,Spring," />
@@ -108,7 +108,7 @@
 
 
 
-  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+  <link rel="shortcut icon" type="image/x-icon" href="/blog/favicon.ico?v=5.1.2" />
 
 
 
@@ -137,7 +137,7 @@
 <script type="text/javascript" id="hexo.configurations">
   var NexT = window.NexT || {};
   var CONFIG = {
-    root: '/',
+    root: '/blog/',
     scheme: 'Muse',
     version: '5.1.2',
     sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
@@ -204,7 +204,7 @@
     
 
     <div class="custom-logo-site-title">
-      <a href="/"  class="brand" rel="start">
+      <a href="/blog/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
         <span class="site-title">风树种子个人博客</span>
         <span class="logo-line-after"><i></i></span>
@@ -232,7 +232,7 @@
       
         
         <li class="menu-item menu-item-home">
-          <a href="/" rel="section">
+          <a href="/blog/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
             
@@ -242,7 +242,7 @@
       
         
         <li class="menu-item menu-item-archives">
-          <a href="/archives/" rel="section">
+          <a href="/blog/archives/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
             
@@ -252,7 +252,7 @@
       
         
         <li class="menu-item menu-item-categories">
-          <a href="/categories/" rel="section">
+          <a href="/blog/categories/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
             
@@ -262,7 +262,7 @@
       
         
         <li class="menu-item menu-item-tags">
-          <a href="/tags/" rel="section">
+          <a href="/blog/tags/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
@@ -272,7 +272,7 @@
       
         
         <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
+          <a href="/blog/about/" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
             
@@ -282,7 +282,7 @@
       
         
         <li class="menu-item menu-item-commonweal">
-          <a href="/404.html" rel="section">
+          <a href="/blog/404.html" rel="section">
             
               <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
             
@@ -323,12 +323,12 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://fengshuzhongzi.github.io/blog/2017/08/23/RabbitMQ消息监听程序异常问题探究/">
+    <link itemprop="mainEntityOfPage" href="https://fengshuzhongzi.github.io/blog/blog/2017/08/23/RabbitMQ消息监听程序异常问题探究/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
       <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+      <meta itemprop="image" content="/blog/uploads/picture/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -375,7 +375,7 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/RabbitMQ/" itemprop="url" rel="index">
+                  <a href="/blog/categories/RabbitMQ/" itemprop="url" rel="index">
                     <span itemprop="name">RabbitMQ</span>
                   </a>
                 </span>
@@ -392,7 +392,7 @@
 
           
           
-             <span id="/2017/08/23/RabbitMQ消息监听程序异常问题探究/" class="leancloud_visitors" data-flag-title="RabbitMQ消息监听程序异常问题探究">
+             <span id="/blog/2017/08/23/RabbitMQ消息监听程序异常问题探究/" class="leancloud_visitors" data-flag-title="RabbitMQ消息监听程序异常问题探究">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -454,7 +454,7 @@
       
 
       
-        <script src="\assets\js\APlayer.min.js"> </script><h3 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a><strong>问题场景</strong></h3><p>在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。</p>
+        <script src="\blog\assets\js\APlayer.min.js"> </script><h3 id="问题场景"><a href="#问题场景" class="headerlink" title="问题场景"></a><strong>问题场景</strong></h3><p>在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。</p>
 <p>通过访问null对象来引发空指针异常，消息监听处理程序代码清单:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">package</span> amqp;</div><div class="line"></div><div class="line"><span class="keyword">import</span> org.springframework.amqp.core.Message;</div><div class="line"><span class="keyword">import</span> org.springframework.amqp.core.MessageListener;</div><div class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@Component</span></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FooMessageListener</span> <span class="keyword">implements</span> <span class="title">MessageListener</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="meta">@Override</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</div><div class="line">        String messageBody = <span class="keyword">new</span> String(message.getBody());</div><div class="line">        System.out.println(<span class="string">" [x] Received '"</span> + messageBody + <span class="string">"'"</span>);</div><div class="line">        String nullStr = <span class="keyword">null</span>;</div><div class="line">        nullStr.toString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <p>往消息监听队列发送一条消息，控制台不停打印异常日志：</p>
@@ -511,9 +511,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/RabbitMQ/" <i class="fa fa-tag"></i> RabbitMQ</a>
+            <a href="/blog/tags/RabbitMQ/" <i class="fa fa-tag"></i> RabbitMQ</a>
           
-            <a href="/tags/Spring/" <i class="fa fa-tag"></i> Spring</a>
+            <a href="/blog/tags/Spring/" <i class="fa fa-tag"></i> Spring</a>
           
         </div>
       
@@ -526,7 +526,7 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/08/23/开篇,扬帆起航！/" rel="next" title="开篇,扬帆起航！">
+              <a href="/blog/2017/08/23/开篇,扬帆起航！/" rel="next" title="开篇,扬帆起航！">
                 <i class="fa fa-chevron-left"></i> 开篇,扬帆起航！
               </a>
             
@@ -536,7 +536,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/09/11/MySQL Replication主从复制原理及拓扑结构/" rel="prev" title="MySQL Replication主从复制原理及拓扑结构">
+              <a href="/blog/2017/09/11/MySQL Replication主从复制原理及拓扑结构/" rel="prev" title="MySQL Replication主从复制原理及拓扑结构">
                 MySQL Replication主从复制原理及拓扑结构 <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -645,7 +645,7 @@
       <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/uploads/picture/avatar.jpg"
+               src="/blog/uploads/picture/avatar.jpg"
                alt="" />
           <p class="site-author-name" itemprop="name"></p>
            
@@ -657,7 +657,7 @@
           
             <div class="site-state-item site-state-posts">
             
-              <a href="/archives/">
+              <a href="/blog/archives/">
             
                 <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">日志</span>
@@ -669,7 +669,7 @@
             
             
             <div class="site-state-item site-state-categories">
-              <a href="/categories/index.html">
+              <a href="/blog/categories/index.html">
                 <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">分类</span>
               </a>
@@ -680,7 +680,7 @@
             
             
             <div class="site-state-item site-state-tags">
-              <a href="/tags/index.html">
+              <a href="/blog/tags/index.html">
                 <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">标签</span>
               </a>
@@ -842,46 +842,46 @@
 
 
   
-  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  <script type="text/javascript" src="/blog/lib/jquery/index.js?v=2.1.3"></script>
 
   
-  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  <script type="text/javascript" src="/blog/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
 
   
-  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  <script type="text/javascript" src="/blog/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
-  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  <script type="text/javascript" src="/blog/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
 
   
-  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
-
-
-  
-
-
-  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
-
-  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
-
-
-
-  
-  
-
-  
-  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
-<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
-
+  <script type="text/javascript" src="/blog/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
 
 
   
 
 
-  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+  <script type="text/javascript" src="/blog/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/blog/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/blog/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/blog/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/blog/js/src/bootstrap.js?v=5.1.2"></script>
 
 
 
