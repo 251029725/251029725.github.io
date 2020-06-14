@@ -118,31 +118,31 @@
 <meta name="description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
 <meta property="og:type" content="article">
 <meta property="og:title" content="扩展阿里巴巴Java开发规约插件">
-<meta property="og:url" content="http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/index.html">
-<meta property="og:site_name" content="技术那些事">
+<meta property="og:url" content="http://yoursite.com/2018/01/29/扩展阿里巴巴Java开发规约插件/index.html">
+<meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/emoji.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd1.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd2.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd3.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/pmd4.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop1.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop2.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop3.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop4.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop5.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/oop6.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea1.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea2.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea3.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea4.jpg">
-<meta property="og:image" content="http://wuqingjian.org/uploads/blog/pmd/idea5.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/emoji.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd1.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd2.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd3.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd4.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop1.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop2.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop3.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop4.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop5.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop6.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea1.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea2.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea3.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea4.jpg">
+<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea5.jpg">
 <meta property="og:updated_time" content="2018-06-27T02:33:57.039Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="扩展阿里巴巴Java开发规约插件">
 <meta name="twitter:description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
-<meta name="twitter:image" content="http://wuqingjian.org/uploads/blog/pmd/emoji.jpg">
+<meta name="twitter:image" content="http://yoursite.com/uploads/blog/pmd/emoji.jpg">
 
 
 
@@ -172,13 +172,13 @@
 
 
 
-  <link rel="canonical" href="http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/01/29/扩展阿里巴巴Java开发规约插件/"/>
 
 
 
 
 
-  <title>扩展阿里巴巴Java开发规约插件 | 技术那些事</title>
+  <title>扩展阿里巴巴Java开发规约插件 | 风树种子个人博客</title>
   
 
 
@@ -218,12 +218,12 @@
     <div class="custom-logo-site-title">
       <a href="/"  class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">技术那些事</span>
+        <span class="site-title">风树种子个人博客</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
       
-        <p class="site-subtitle">Don't be moved by yourself</p>
+        <p class="site-subtitle">自娱自乐</p>
       
   </div>
 
@@ -335,16 +335,16 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://wuqingjian.org/2018/01/29/扩展阿里巴巴Java开发规约插件/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/扩展阿里巴巴Java开发规约插件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="吴清剑">
+      <meta itemprop="name" content="">
       <meta itemprop="description" content="">
       <meta itemprop="image" content="/uploads/picture/avatar.jpg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="技术那些事">
+      <meta itemprop="name" content="风树种子个人博客">
     </span>
 
     
@@ -694,8 +694,8 @@
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/picture/avatar.jpg"
-               alt="吴清剑" />
-          <p class="site-author-name" itemprop="name">吴清剑</p>
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
            
               <p class="site-description motion-element" itemprop="description"></p>
           
@@ -815,7 +815,7 @@
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">吴清剑</span>
+  <span class="author" itemprop="copyrightHolder"></span>
 
   
     <span class="post-meta-divider">|</span>

@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+<meta name="theme-color" content="#222">
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "3b93eacd"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Consul," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="1、安装1.1、下载以linux下安装为例，首先下载安装包，下载地址：https://www.consul.io/downloads.html 下载后上传到linux服务器，或者直接在linux上下载，版本可自行替换 1wget https://releases.hashicorp.com/consul/1.7.0/consul_1.7.0_linux_amd64.zip 1.2、解压缩1unz">
+<meta name="keywords" content="Consul">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Consul快速入门（二）：Consul集群安装部署">
+<meta property="og:url" content="http://yoursite.com/2020/03/01/Consul快速入门（二）：Consul集群安装部署/index.html">
+<meta property="og:site_name" content="风树种子个人博客">
+<meta property="og:description" content="1、安装1.1、下载以linux下安装为例，首先下载安装包，下载地址：https://www.consul.io/downloads.html 下载后上传到linux服务器，或者直接在linux上下载，版本可自行替换 1wget https://releases.hashicorp.com/consul/1.7.0/consul_1.7.0_linux_amd64.zip 1.2、解压缩1unz">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200220214600700.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MTM4ODM=,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200220214717761.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MTM4ODM=,size_16,color_FFFFFF,t_70">
+<meta property="og:updated_time" content="2020-03-03T06:42:52.821Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Consul快速入门（二）：Consul集群安装部署">
+<meta name="twitter:description" content="1、安装1.1、下载以linux下安装为例，首先下载安装包，下载地址：https://www.consul.io/downloads.html 下载后上传到linux服务器，或者直接在linux上下载，版本可自行替换 1wget https://releases.hashicorp.com/consul/1.7.0/consul_1.7.0_linux_amd64.zip 1.2、解压缩1unz">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20200220214600700.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MTM4ODM=,size_16,color_FFFFFF,t_70">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2020/03/01/Consul快速入门（二）：Consul集群安装部署/"/>
+
+
+
+
+
+  <title>Consul快速入门（二）：Consul集群安装部署 | 风树种子个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c7d800a042138aa6974195b2f5d4b83";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">风树种子个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">自娱自乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/01/Consul快速入门（二）：Consul集群安装部署/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="风树种子个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Consul快速入门（二）：Consul集群安装部署</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-03-01T17:10:06+08:00">
+                2020-03-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Consul/" itemprop="url" rel="index">
+                    <span itemprop="name">Consul</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2020/03/01/Consul快速入门（二）：Consul集群安装部署/" class="leancloud_visitors" data-flag-title="Consul快速入门（二）：Consul集群安装部署">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  2,494字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  14分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><h1 id="1、安装"><a href="#1、安装" class="headerlink" title="1、安装"></a>1、安装</h1><h2 id="1-1、下载"><a href="#1-1、下载" class="headerlink" title="1.1、下载"></a>1.1、下载</h2><p>以linux下安装为例，首先下载安装包，下载地址：<a href="https://www.consul.io/downloads.html" target="_blank" rel="external">https://www.consul.io/downloads.html</a></p>
+<p>下载后上传到linux服务器，或者直接在linux上下载，版本可自行替换</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wget https://releases.hashicorp.com/consul/1.7.0/consul_1.7.0_linux_amd64.zip</div></pre></td></tr></table></figure>
+<h2 id="1-2、解压缩"><a href="#1-2、解压缩" class="headerlink" title="1.2、解压缩"></a>1.2、解压缩</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">unzip consul_1.7.0_linux_amd64.zip -d /usr/local/bin</div></pre></td></tr></table></figure>
+<h2 id="1-3、设置环境变量"><a href="#1-3、设置环境变量" class="headerlink" title="1.3、设置环境变量"></a>1.3、设置环境变量</h2><p>笔者已经将/usr/local/bin目录设置到环境变量中，如果你还没有设置环境变量，需要设置下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">$ vi /etc/profile</div><div class="line">export CONSUL_HOME=/usr/local/bin/consul</div><div class="line">export PATH=$PATH:CONSUL_HOME</div></pre></td></tr></table></figure>
+<p>使用环境变量配置生效</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">source /etc/profile</div></pre></td></tr></table></figure>
+<h2 id="1-4、验证"><a href="#1-4、验证" class="headerlink" title="1.4、验证"></a>1.4、验证</h2><p>查看consul版本，验证是否安装成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# consul version</div><div class="line">Consul v1.7.0</div><div class="line">Protocol 2 spoken by default, understands 2 to 3 (agent will automatically use protocol &gt;2 when speaking to compatible agents)</div></pre></td></tr></table></figure>
+<h1 id="2、运行"><a href="#2、运行" class="headerlink" title="2、运行"></a>2、运行</h1><h2 id="2-1、agent启动参数说明"><a href="#2-1、agent启动参数说明" class="headerlink" title="2.1、agent启动参数说明"></a>2.1、agent启动参数说明</h2><p>consul以agent的方式启动，相关参数说明：</p>
+<ul>
+<li>-server 以服务端模式运行，相应的还有客户端模式-client</li>
+<li>-ui 启动内置的Web UI</li>
+<li>-bootstrap-expect=3 集群最少节点数，类似zookeeper的配置一样，为了防止脑裂，一般为奇数</li>
+<li>-data-dir=/data/consul 数据存储目录</li>
+<li>-node=agent-1 集群的节点名称</li>
+<li>-client=0.0.0.0 指定客户端能访问的ip，类似于ip白名单。0.0.0.0表示不限制</li>
+<li>-bind=10.25.84.163 绑定了当前主机的IP地址</li>
+<li>-datacenter=dc1 数据中心名称</li>
+<li>-join agent启动时加入到代理服务器地址，不指定不会加入任何节点，可以在启动后通过<code>consul join</code>命令加入</li>
+</ul>
+<p>更多参数说明可以通过–help查看<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">consul agent --help</div></pre></td></tr></table></figure></p>
+<p>或者参考官网配置说明：<a href="https://www.consul.io/docs/agent/options.html" target="_blank" rel="external">https://www.consul.io/docs/agent/options.html</a></p>
+<h2 id="2-2、启动agent"><a href="#2-2、启动agent" class="headerlink" title="2.2、启动agent"></a>2.2、启动agent</h2><p>接下来搭建consul集群，首先准备三台服务器：</p>
+<ul>
+<li>10.25.84.163</li>
+<li>10.25.84.164</li>
+<li>10.25.84.165</li>
+</ul>
+<p>分别在三台服务器输入以下对应的命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">// 启动10.25.84.163</div><div class="line">consul agent -server -ui -bootstrap-expect=3 -data-dir=/data/consul -node=server-1 -client=0.0.0.0 -bind=10.25.84.163 -datacenter=dc1</div><div class="line"></div><div class="line">// 启动10.25.84.164，并加入10.25.84.163节点</div><div class="line">consul agent -server -ui -bootstrap-expect=3 -data-dir=/data/consul -node=server-2 -client=0.0.0.0 -bind=10.25.84.164 -datacenter=dc1 -join 10.25.84.163</div><div class="line"></div><div class="line">// 启动10.25.84.165，并加入10.25.84.163节点</div><div class="line">consul agent -server -ui -bootstrap-expect=3 -data-dir=/data/consul -node=server-3 -client=0.0.0.0 -bind=10.25.84.165 -datacenter=dc1 -join 10.25.84.163</div></pre></td></tr></table></figure>
+<p>启动日志：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# consul agent -server -ui -bootstrap-expect=3 -data-dir=/data/consul -node=server-1 -client=0.0.0.0 -bind=10.25.84.163 -datacenter=dc1</div><div class="line">bootstrap_expect &gt; 0: expecting 3 servers</div><div class="line">==&gt; Starting Consul agent...</div><div class="line">           Version: &apos;v1.7.0&apos;</div><div class="line">           Node ID: &apos;4a60c9bd-472b-01a3-57f4-c74b8ba4d3df&apos;</div><div class="line">         Node name: &apos;server-1&apos;</div><div class="line">        Datacenter: &apos;dc1&apos; (Segment: &apos;&lt;all&gt;&apos;)</div><div class="line">            Server: true (Bootstrap: false)</div><div class="line">       Client Addr: [0.0.0.0] (HTTP: 8500, HTTPS: -1, gRPC: -1, DNS: 8600)</div><div class="line">      Cluster Addr: 10.25.84.163 (LAN: 8301, WAN: 8302)</div><div class="line">           Encrypt: Gossip: false, TLS-Outgoing: false, TLS-Incoming: false, Auto-Encrypt-TLS: false</div><div class="line"></div><div class="line">==&gt; Log data will now stream in as it occurs:</div><div class="line"></div><div class="line">    2020-02-21T11:28:20.323+0800 [INFO]  agent.server.raft: initial configuration: index=0 servers=[]</div><div class="line">    2020-02-21T11:28:20.324+0800 [INFO]  agent.server.raft: entering follower state: follower=&quot;Node at 10.25.84.163:8300 [Follower]&quot; leader=</div><div class="line">    2020-02-21T11:28:20.325+0800 [INFO]  agent.server.serf.wan: serf: EventMemberJoin: server-1.dc1 10.25.84.163</div><div class="line">    2020-02-21T11:28:20.326+0800 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: server-1 10.25.84.163</div><div class="line">    2020-02-21T11:28:20.326+0800 [INFO]  agent.server: Adding LAN server: server=&quot;server-1 (Addr: tcp/10.25.84.163:8300) (DC: dc1)&quot;</div><div class="line">    2020-02-21T11:28:20.326+0800 [INFO]  agent.server: Handled event for server in area: event=member-join server=server-1.dc1 area=wan</div><div class="line">    2020-02-21T11:28:20.327+0800 [INFO]  agent: Started DNS server: address=0.0.0.0:8600 network=tcp</div><div class="line">    2020-02-21T11:28:20.327+0800 [INFO]  agent: Started DNS server: address=0.0.0.0:8600 network=udp</div><div class="line">    2020-02-21T11:28:20.328+0800 [INFO]  agent: Started HTTP server: address=[::]:8500 network=tcp</div><div class="line">    2020-02-21T11:28:20.328+0800 [INFO]  agent: started state syncer</div><div class="line">==&gt; Consul agent running!</div><div class="line">    2020-02-21T11:28:26.317+0800 [WARN]  agent.server.raft: no known peers, aborting election</div><div class="line">    2020-02-21T11:28:27.447+0800 [ERROR] agent.anti_entropy: failed to sync remote state: error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:28:34.785+0800 [ERROR] agent.http: Request error: method=GET url=/v1/internal/ui/services?dc=dc1&amp;index=10249 from=10.113.116.192:3000 error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:28:34.965+0800 [ERROR] agent.http: Request error: method=GET url=/v1/internal/ui/nodes?dc=dc1&amp;index=10249 from=10.113.116.192:3001 error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:28:45.387+0800 [ERROR] agent: Coordinate update error: error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:28:59.448+0800 [ERROR] agent.anti_entropy: failed to sync remote state: error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:29:02.697+0800 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: server-2 10.25.84.164</div><div class="line">    2020-02-21T11:29:02.697+0800 [INFO]  agent.server: Adding LAN server: server=&quot;server-2 (Addr: tcp/10.25.84.164:8300) (DC: dc1)&quot;</div><div class="line">    2020-02-21T11:29:02.698+0800 [INFO]  agent.server.serf.wan: serf: EventMemberJoin: server-2.dc1 10.25.84.164</div><div class="line">    2020-02-21T11:29:02.698+0800 [INFO]  agent.server: Handled event for server in area: event=member-join server=server-2.dc1 area=wan</div><div class="line">    2020-02-21T11:29:19.312+0800 [ERROR] agent: Coordinate update error: error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:29:21.261+0800 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: server-3 10.25.84.165</div><div class="line">    2020-02-21T11:29:21.261+0800 [INFO]  agent.server: Adding LAN server: server=&quot;server-3 (Addr: tcp/10.25.84.165:8300) (DC: dc1)&quot;</div><div class="line">    2020-02-21T11:29:21.269+0800 [INFO]  agent.server: Found expected number of peers, attempting bootstrap: peers=10.25.84.163:8300,10.25.84.164:8300,10.25.84.165:8300</div><div class="line">    2020-02-21T11:29:21.281+0800 [INFO]  agent.server.serf.wan: serf: EventMemberJoin: server-3.dc1 10.25.84.165</div><div class="line">    2020-02-21T11:29:21.281+0800 [INFO]  agent.server: Handled event for server in area: event=member-join server=server-3.dc1 area=wan</div><div class="line">    2020-02-21T11:29:24.003+0800 [ERROR] agent.anti_entropy: failed to sync remote state: error=&quot;No cluster leader&quot;</div><div class="line">    2020-02-21T11:29:27.329+0800 [WARN]  agent.server.raft: heartbeat timeout reached, starting election: last-leader=</div><div class="line">    2020-02-21T11:29:27.329+0800 [INFO]  agent.server.raft: entering candidate state: node=&quot;Node at 10.25.84.163:8300 [Candidate]&quot; term=2</div><div class="line">    2020-02-21T11:29:27.351+0800 [INFO]  agent.server.raft: election won: tally=2</div><div class="line">    2020-02-21T11:29:27.351+0800 [INFO]  agent.server.raft: entering leader state: leader=&quot;Node at 10.25.84.163:8300 [Leader]&quot;</div><div class="line">    2020-02-21T11:29:27.351+0800 [INFO]  agent.server.raft: added peer, starting replication: peer=b3d84299-a458-19bf-2b98-ca9031e6aea4</div><div class="line">    2020-02-21T11:29:27.351+0800 [INFO]  agent.server.raft: added peer, starting replication: peer=31174405-571f-f598-ef74-0a9aba59a6a8</div><div class="line">    2020-02-21T11:29:27.351+0800 [INFO]  agent.server: cluster leadership acquired</div><div class="line">    2020-02-21T11:29:27.351+0800 [INFO]  agent.server: New leader elected: payload=server-1</div><div class="line">    2020-02-21T11:29:27.352+0800 [INFO]  agent.server.raft: pipelining replication: peer=&quot;&#123;Voter 31174405-571f-f598-ef74-0a9aba59a6a8 10.25.84.165:8300&#125;&quot;</div><div class="line">    2020-02-21T11:29:27.352+0800 [WARN]  agent.server.raft: appendEntries rejected, sending older logs: peer=&quot;&#123;Voter b3d84299-a458-19bf-2b98-ca9031e6aea4 10.25.84.164:8300&#125;&quot; next=1</div><div class="line">    2020-02-21T11:29:27.356+0800 [INFO]  agent.server.raft: pipelining replication: peer=&quot;&#123;Voter b3d84299-a458-19bf-2b98-ca9031e6aea4 10.25.84.164:8300&#125;&quot;</div><div class="line">    2020-02-21T11:29:27.368+0800 [INFO]  agent.leader: started routine: routine=&quot;CA root pruning&quot;</div><div class="line">    2020-02-21T11:29:27.368+0800 [INFO]  agent.server: member joined, marking health alive: member=server-1</div><div class="line">    2020-02-21T11:29:27.381+0800 [INFO]  agent.server: member joined, marking health alive: member=server-2</div><div class="line">    2020-02-21T11:29:27.396+0800 [INFO]  agent.server: member joined, marking health alive: member=server-3</div><div class="line">    2020-02-21T11:29:28.609+0800 [INFO]  agent: Synced node info</div></pre></td></tr></table></figure>
+<p>查看集群启动结果：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# consul members</div><div class="line">Node      Address            Status  Type    Build  Protocol  DC   Segment</div><div class="line">server-1  10.25.84.163:8301  alive   server  1.7.0  2         dc1  &lt;all&gt;</div><div class="line">server-2  10.25.84.164:8301  alive   server  1.7.0  2         dc1  &lt;all&gt;</div><div class="line">server-3  10.25.84.165:8301  alive   server  1.7.0  2         dc1  &lt;all&gt;</div></pre></td></tr></table></figure>
+<p>命令输出显示了集群节点名称、IP端口、健康状态、启动模式、所在数据中心和版本信息。</p>
+<h2 id="2-3、访问Consul的WebUI控制台"><a href="#2-3、访问Consul的WebUI控制台" class="headerlink" title="2.3、访问Consul的WebUI控制台"></a>2.3、访问Consul的WebUI控制台</h2><p>三台服务都起来后，我们可以访问Consul的WebUI控制台，WEB控制台默认端口为：8500，在浏览器输入地址： <a href="http://10.25.84.163:8500" target="_blank" rel="external">10.25.84.163:8500</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20200220214600700.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MTM4ODM=,size_16,color_FFFFFF,t_70" alt="consul-success-ui-services.PNG"></p>
+<p>切换nodes标签页：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200220214717761.PNG?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MTM4ODM=,size_16,color_FFFFFF,t_70" alt="consul-success-ui-nodes.PNG"></p>
+<h1 id="3、查看数据中心"><a href="#3、查看数据中心" class="headerlink" title="3、查看数据中心"></a>3、查看数据中心</h1><p>到目前为止，我们已经搭建好数据中心了，现在我们可以查看下数据中心中的成员</p>
+<h2 id="3-1、通过members命令查看"><a href="#3-1、通过members命令查看" class="headerlink" title="3.1、通过members命令查看"></a>3.1、通过members命令查看</h2><p>members命令针对Consul客户端运行，该客户端通过<code>gossip</code>协议获取其信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# consul members</div><div class="line">Node      Address            Status  Type    Build  Protocol  DC   Segment</div><div class="line">server-1  10.25.84.163:8301  alive   server  1.7.0  2         dc1  &lt;all&gt;</div><div class="line">server-2  10.25.84.164:8301  alive   server  1.7.0  2         dc1  &lt;all&gt;</div><div class="line">server-3  10.25.84.165:8301  alive   server  1.7.0  2         dc1  &lt;all&gt;</div></pre></td></tr></table></figure>
+<p>命令输出显示了数据中心的节点、IP端口、健康状态、角色、所在数据中心和版本信息。</p>
+<p>还可以用过 -detailed 参数获取更多信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# consul members -detailed</div><div class="line">Node      Address            Status  Tags</div><div class="line">server-1  10.25.84.163:8301  alive   acls=0,build=1.7.0:95fb95bf,dc=dc1,expect=3,id=4a60c9bd-472b-01a3-57f4-c74b8ba4d3df,port=8300,raft_vsn=3,role=consul,segment=&lt;all&gt;,vsn=2,vsn_max=3,vsn_min=2,wan_join_port=8302</div><div class="line">server-2  10.25.84.164:8301  alive   acls=0,build=1.7.0:95fb95bf,dc=dc1,expect=3,id=b3d84299-a458-19bf-2b98-ca9031e6aea4,port=8300,raft_vsn=3,role=consul,segment=&lt;all&gt;,vsn=2,vsn_max=3,vsn_min=2,wan_join_port=8302</div><div class="line">server-3  10.25.84.165:8301  alive   acls=0,build=1.7.0:95fb95bf,dc=dc1,expect=3,id=31174405-571f-f598-ef74-0a9aba59a6a8,port=8300,raft_vsn=3,role=consul,segment=&lt;all&gt;,vsn=2,vsn_max=3,vsn_min=2,wan_join_port=8302</div></pre></td></tr></table></figure>
+<h2 id="3-2、通过HTTP-API查看"><a href="#3-2、通过HTTP-API查看" class="headerlink" title="3.2、通过HTTP API查看"></a>3.2、通过HTTP API查看</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl 10.25.84.163:8500/v1/catalog/nodes</div></pre></td></tr></table></figure>
+<p>返回数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line">[</div><div class="line">    &#123;</div><div class="line">        &quot;ID&quot;:&quot;99f8e10c-edda-bb40-21b4-8719ba851308&quot;,</div><div class="line">        &quot;Node&quot;:&quot;agent-1&quot;,</div><div class="line">        &quot;Address&quot;:&quot;10.25.84.163&quot;,</div><div class="line">        &quot;Datacenter&quot;:&quot;dc1&quot;,</div><div class="line">        &quot;TaggedAddresses&quot;:&#123;</div><div class="line">            &quot;lan&quot;:&quot;10.25.84.163&quot;,</div><div class="line">            &quot;lan_ipv4&quot;:&quot;10.25.84.163&quot;,</div><div class="line">            &quot;wan&quot;:&quot;10.25.84.163&quot;,</div><div class="line">            &quot;wan_ipv4&quot;:&quot;10.25.84.163&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;Meta&quot;:&#123;</div><div class="line">            &quot;consul-network-segment&quot;:&quot;&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;CreateIndex&quot;:5,</div><div class="line">        &quot;ModifyIndex&quot;:11</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">        &quot;ID&quot;:&quot;824a86e6-9713-a136-8037-c489222a88e1&quot;,</div><div class="line">        &quot;Node&quot;:&quot;agent-2&quot;,</div><div class="line">        &quot;Address&quot;:&quot;10.25.84.164&quot;,</div><div class="line">        &quot;Datacenter&quot;:&quot;dc1&quot;,</div><div class="line">        &quot;TaggedAddresses&quot;:&#123;</div><div class="line">            &quot;lan&quot;:&quot;10.25.84.164&quot;,</div><div class="line">            &quot;lan_ipv4&quot;:&quot;10.25.84.164&quot;,</div><div class="line">            &quot;wan&quot;:&quot;10.25.84.164&quot;,</div><div class="line">            &quot;wan_ipv4&quot;:&quot;10.25.84.164&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;Meta&quot;:&#123;</div><div class="line">            &quot;consul-network-segment&quot;:&quot;&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;CreateIndex&quot;:7,</div><div class="line">        &quot;ModifyIndex&quot;:10</div><div class="line">    &#125;,</div><div class="line">    &#123;</div><div class="line">        &quot;ID&quot;:&quot;5f073f8b-2130-254d-c83f-30d7850e2192&quot;,</div><div class="line">        &quot;Node&quot;:&quot;agent-3&quot;,</div><div class="line">        &quot;Address&quot;:&quot;10.25.84.165&quot;,</div><div class="line">        &quot;Datacenter&quot;:&quot;dc1&quot;,</div><div class="line">        &quot;TaggedAddresses&quot;:&#123;</div><div class="line">            &quot;lan&quot;:&quot;10.25.84.165&quot;,</div><div class="line">            &quot;lan_ipv4&quot;:&quot;10.25.84.165&quot;,</div><div class="line">            &quot;wan&quot;:&quot;10.25.84.165&quot;,</div><div class="line">            &quot;wan_ipv4&quot;:&quot;10.25.84.165&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;Meta&quot;:&#123;</div><div class="line">            &quot;consul-network-segment&quot;:&quot;&quot;</div><div class="line">        &#125;,</div><div class="line">        &quot;CreateIndex&quot;:8,</div><div class="line">        &quot;ModifyIndex&quot;:9</div><div class="line">    &#125;</div><div class="line">]</div></pre></td></tr></table></figure>
+<h2 id="3-3、通过DNS接口查看"><a href="#3-3、通过DNS接口查看" class="headerlink" title="3.3、通过DNS接口查看"></a>3.3、通过DNS接口查看</h2><p>除了HTTP API外，我们还可以使用DNS接口查看数据中心成员信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# dig @10.25.84.163 -p 8600 server-1.node.consul</div><div class="line"></div><div class="line">; &lt;&lt;&gt;&gt; DiG 9.11.4-P2-RedHat-9.11.4-9.P2.el7 &lt;&lt;&gt;&gt; @10.25.84.163 -p 8600 server-1.node.consul</div><div class="line">; (1 server found)</div><div class="line">;; global options: +cmd</div><div class="line">;; Got answer:</div><div class="line">;; -&gt;&gt;HEADER&lt;&lt;- opcode: QUERY, status: NOERROR, id: 64004</div><div class="line">;; flags: qr aa rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 2</div><div class="line">;; WARNING: recursion requested but not available</div><div class="line"></div><div class="line">;; OPT PSEUDOSECTION:</div><div class="line">; EDNS: version: 0, flags:; udp: 4096</div><div class="line">;; QUESTION SECTION:</div><div class="line">;server-1.node.consul.		IN	A</div><div class="line"></div><div class="line">;; ANSWER SECTION:</div><div class="line">server-1.node.consul.	0	IN	A	10.25.84.163</div><div class="line"></div><div class="line">;; ADDITIONAL SECTION:</div><div class="line">server-1.node.consul.	0	IN	TXT	&quot;consul-network-segment=&quot;</div><div class="line"></div><div class="line">;; Query time: 1 msec</div><div class="line">;; SERVER: 10.25.84.163#8600(10.25.84.163)</div><div class="line">;; WHEN: Fri Feb 21 12:47:15 CST 2020</div><div class="line">;; MSG SIZE  rcvd: 101</div></pre></td></tr></table></figure>
+<p>其中<code>server-1</code>.node.consul中第一部分需要替换成自己的agent节点名 </p>
+<p>dig命令如果不存在需要安装下，命令：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum -y install bind-utils</div></pre></td></tr></table></figure>
+<h1 id="4、停止agent服务"><a href="#4、停止agent服务" class="headerlink" title="4、停止agent服务"></a>4、停止agent服务</h1><p>通过consul leave命令优雅停止服务，我们再打开一个从节点机器终端，运行该命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[root@localhost ~]# consul leave</div><div class="line">Graceful leave complete</div></pre></td></tr></table></figure>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Consul/" <i class="fa fa-tag"></i> Consul</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/03/01/Consul快速入门（一）：Consul介绍/" rel="next" title="Consul快速入门（一）：Consul介绍">
+                <i class="fa fa-chevron-left"></i> Consul快速入门（一）：Consul介绍
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/03/01/Consul快速入门（三）：Spring Cloud Consul服务注册与发现/" rel="prev" title="Consul快速入门（三）：Spring Cloud Consul服务注册与发现">
+                Consul快速入门（三）：Spring Cloud Consul服务注册与发现 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+       
+         <div id="gitment-container"></div>
+       
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/picture/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/u014513883" target="_blank" title="CSDN博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+	  
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1、安装"><span class="nav-number">1.</span> <span class="nav-text">1、安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1、下载"><span class="nav-number">1.1.</span> <span class="nav-text">1.1、下载</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2、解压缩"><span class="nav-number">1.2.</span> <span class="nav-text">1.2、解压缩</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-3、设置环境变量"><span class="nav-number">1.3.</span> <span class="nav-text">1.3、设置环境变量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-4、验证"><span class="nav-number">1.4.</span> <span class="nav-text">1.4、验证</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2、运行"><span class="nav-number">2.</span> <span class="nav-text">2、运行</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1、agent启动参数说明"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、agent启动参数说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2、启动agent"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、启动agent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3、访问Consul的WebUI控制台"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、访问Consul的WebUI控制台</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3、查看数据中心"><span class="nav-number">3.</span> <span class="nav-text">3、查看数据中心</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1、通过members命令查看"><span class="nav-number">3.1.</span> <span class="nav-text">3.1、通过members命令查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2、通过HTTP-API查看"><span class="nav-number">3.2.</span> <span class="nav-text">3.2、通过HTTP API查看</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3、通过DNS接口查看"><span class="nav-number">3.3.</span> <span class="nav-text">3.3、通过DNS接口查看</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4、停止agent服务"><span class="nav-number">4.</span> <span class="nav-text">4、停止agent服务</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">
+      27.7k
+    </span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+   
+       <script type="text/javascript">
+           var gitment = new Gitment({
+               id: 'Consul快速入门（二）：Consul集群安装部署', 
+               owner: '251029725',
+               repo: 'BlogComments',
+               oauth: {
+                   client_id: '6b23971b9bc711ad8a77',
+                   client_secret: '0d6333feba0d533f1b1f9fdc4f57c39c8c9364ab',
+               }});
+           gitment.render('gitment-container');
+       </script>
+   
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("IzANThQbGgh3xlT9QzywaftY-gzGzoHsz", "mhjhCxSUcSqsyOPbiKdNQ5Tv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
