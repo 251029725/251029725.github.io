@@ -118,31 +118,31 @@
 <meta name="description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
 <meta property="og:type" content="article">
 <meta property="og:title" content="扩展阿里巴巴Java开发规约插件">
-<meta property="og:url" content="http://yoursite.com/2018/01/29/扩展阿里巴巴Java开发规约插件/index.html">
+<meta property="og:url" content="https://fengshuzhongzi.github.io/blog/2018/01/29/扩展阿里巴巴Java开发规约插件/index.html">
 <meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/emoji.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd1.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd2.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd3.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/pmd4.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop1.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop2.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop3.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop4.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop5.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/oop6.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea1.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea2.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea3.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea4.jpg">
-<meta property="og:image" content="http://yoursite.com/uploads/blog/pmd/idea5.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/emoji.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/pmd1.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/pmd2.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/pmd3.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/pmd4.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/oop1.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/oop2.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/oop3.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/oop4.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/oop5.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/oop6.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/idea1.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/idea2.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/idea3.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/idea4.jpg">
+<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/idea5.jpg">
 <meta property="og:updated_time" content="2018-06-27T02:33:57.039Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="扩展阿里巴巴Java开发规约插件">
 <meta name="twitter:description" content="前言工作中难免会遇到维护别人代码的情况，那么首先就得看懂别人写的代码。如果对方写的代码混乱臃肿，维护成本必然很高，如果对方写的代码优雅清晰，那维护的人看起来必然心情愉悦。正所谓”前人栽树,后人乘凉;前人埋坑，后人骂娘”。  代码首先是给人看的，其次才是给机器看到，如何编写出任何人都看到懂的代码？答案是制定规范！ 每个公司都会有自己的编码规范，但是往往的情况是赶项目进度或者懒惰或者个人水平习惯等原">
-<meta name="twitter:image" content="http://yoursite.com/uploads/blog/pmd/emoji.jpg">
+<meta name="twitter:image" content="https://fengshuzhongzi.github.io/uploads/blog/pmd/emoji.jpg">
 
 
 
@@ -172,7 +172,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/01/29/扩展阿里巴巴Java开发规约插件/"/>
+  <link rel="canonical" href="https://fengshuzhongzi.github.io/blog/2018/01/29/扩展阿里巴巴Java开发规约插件/"/>
 
 
 
@@ -335,7 +335,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/01/29/扩展阿里巴巴Java开发规约插件/">
+    <link itemprop="mainEntityOfPage" href="https://fengshuzhongzi.github.io/blog/2018/01/29/扩展阿里巴巴Java开发规约插件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
