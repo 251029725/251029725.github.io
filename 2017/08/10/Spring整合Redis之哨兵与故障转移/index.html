@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+<meta name="theme-color" content="#222">
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "3b93eacd"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Redis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="前言上篇博客谈到了Spring整合redis集群以及故障转移演示，会发现redis集群模式存在一个很明显的问题：当某个主节点及其所有从节点挂掉，整个集群因为缺少该节点负责范围的哈希槽（hash slot）而宕掉，不具高可用性。redis引入了哨兵（sentinel）模式，能很好解决集群模式存在的不足。引用官网，redis哨兵系统有三个作用：  监控（Monitoring）： Sentinel 会">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring整合Redis之哨兵与故障转移">
+<meta property="og:url" content="http://yoursite.com/2017/08/10/Spring整合Redis之哨兵与故障转移/index.html">
+<meta property="og:site_name" content="风树种子个人博客">
+<meta property="og:description" content="前言上篇博客谈到了Spring整合redis集群以及故障转移演示，会发现redis集群模式存在一个很明显的问题：当某个主节点及其所有从节点挂掉，整个集群因为缺少该节点负责范围的哈希槽（hash slot）而宕掉，不具高可用性。redis引入了哨兵（sentinel）模式，能很好解决集群模式存在的不足。引用官网，redis哨兵系统有三个作用：  监控（Monitoring）： Sentinel 会">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMDQxMzc4?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMjIzNDY0?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMTIwNjEz?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODEwMDkzNDI4NzI2?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNDQwNDA5?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMzE2NDI2?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMzE2NDI2?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNTMzODYw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNjQyMDY2?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNzI3MzU1?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyOTMyODA4?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODEwMDk1ODQ2OTk2?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIzMDIxNTUy?x-oss-process=image/format,png">
+<meta property="og:updated_time" content="2020-06-14T07:22:00.903Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring整合Redis之哨兵与故障转移">
+<meta name="twitter:description" content="前言上篇博客谈到了Spring整合redis集群以及故障转移演示，会发现redis集群模式存在一个很明显的问题：当某个主节点及其所有从节点挂掉，整个集群因为缺少该节点负责范围的哈希槽（hash slot）而宕掉，不具高可用性。redis引入了哨兵（sentinel）模式，能很好解决集群模式存在的不足。引用官网，redis哨兵系统有三个作用：  监控（Monitoring）： Sentinel 会">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMDQxMzc4?x-oss-process=image/format,png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/10/Spring整合Redis之哨兵与故障转移/"/>
+
+
+
+
+
+  <title>Spring整合Redis之哨兵与故障转移 | 风树种子个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c7d800a042138aa6974195b2f5d4b83";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">风树种子个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">自娱自乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/10/Spring整合Redis之哨兵与故障转移/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="风树种子个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring整合Redis之哨兵与故障转移</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-10T10:22:43+08:00">
+                2017-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/10/Spring整合Redis之哨兵与故障转移/" class="leancloud_visitors" data-flag-title="Spring整合Redis之哨兵与故障转移">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,743字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>上篇博客谈到了Spring整合redis集群以及故障转移演示，会发现redis集群模式存在一个很明显的问题：当某个主节点及其所有从节点挂掉，整个集群因为缺少该节点负责范围的哈希槽（hash slot）而宕掉，不具高可用性。redis引入了哨兵（sentinel）模式，能很好解决集群模式存在的不足。引用官网，redis哨兵系统有三个作用：</p>
+<ul>
+<li><strong>监控（Monitoring）</strong>： Sentinel 会不断地检查你的主服务器和从服务器是否运作正常。</li>
+<li><strong>提醒（Notification）</strong>： 当被监控的某个 Redis 服务器出现问题时， Sentinel 可以通过 API 向管理员或者其他应用程序发送通知。</li>
+<li><strong>自动故障迁移（Automatic failover</strong>）： 当一个主服务器不能正常工作时， Sentinel 会开始一次自动故障迁移操作， 它会将失效主服务器的其中一个从服务器升级为新的主服务器， 并让失效主服务器的其他从服务器改为复制新的主服务器； 当客户端试图连接失效的主服务器时， 集群也会向客户端返回新主服务器的地址， 使得集群可以使用新主服务器代替失效服务器。</li>
+</ul>
+<p>本文主要讲解spring整合redis sentinel及故障转移示例，以此加深理解。</p>
+<h3 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h3><p>笔者已经预先搭建好Redis Sentinel，环境如下：</p>
+<ul>
+<li>OS：CentOS release 6.5 (Final)</li>
+<li>Redis版本：4.0.1</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>role</th>
+<th>ip</th>
+<th>port</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Redis Master</td>
+<td>192.168.48.31</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>Redis Slave1</td>
+<td>192.168.48.32</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>Redis Slave0</td>
+<td>192.168.48.33</td>
+<td>6379</td>
+</tr>
+<tr>
+<td>Redis Sentinel</td>
+<td>192.168.48.31</td>
+<td>26379</td>
+</tr>
+<tr>
+<td>Redis Sentinel</td>
+<td>192.168.48.32</td>
+<td>26379</td>
+</tr>
+<tr>
+<td>Redis Sentinel</td>
+<td>192.168.48.33</td>
+<td>26379</td>
+</tr>
+</tbody>
+</table>
+<p>客户端连接主节点，查看Redis Master相关信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h 192.168.48.31 info Replication</div></pre></td></tr></table></figure>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMDQxMzc4?x-oss-process=image/format,png" alt="Redis Master相关信息"></p>
+<p>Redis Sentinel启动信息</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMjIzNDY0?x-oss-process=image/format,png" alt="Redis Sentinel启动信息"></p>
+<p>客户端连接sentinel节点，查看Redis Sentinel相关信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h 192.168.48.31 -p 26379 info Sentinel</div></pre></td></tr></table></figure></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMTIwNjEz?x-oss-process=image/format,png" alt="Redis Sentinel相关信息"></p>
+<h3 id="spring整合redis-sentinel"><a href="#spring整合redis-sentinel" class="headerlink" title="spring整合redis sentinel"></a>spring整合redis sentinel</h3><h4 id="step1、maven依赖引入"><a href="#step1、maven依赖引入" class="headerlink" title="step1、maven依赖引入"></a>step1、maven依赖引入</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;dependencies&gt;</div><div class="line">    &lt;dependency&gt;</div><div class="line">        &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;1.8.6.RELEASE&lt;/version&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line">    &lt;dependency&gt;</div><div class="line">        &lt;groupId&gt;redis.clients&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;jedis&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;2.9.0&lt;/version&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line">&lt;/dependencies&gt;</div></pre></td></tr></table></figure>
+<h4 id="step2、配置ConnectionFactory"><a href="#step2、配置ConnectionFactory" class="headerlink" title="step2、配置ConnectionFactory"></a>step2、配置ConnectionFactory</h4><p>构造JedisConnectionFactory实例，注入池配置poolConfig和哨兵配置sentinelConfig<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;jedisConnectionFactory&quot; class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;&gt;</div><div class="line">    &lt;constructor-arg name=&quot;sentinelConfig&quot; ref=&quot;redisSentinelConfiguration&quot;/&gt;</div><div class="line">    &lt;constructor-arg name=&quot;poolConfig&quot; ref=&quot;jedisPoolConfig&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure></p>
+<h4 id="step3、配置JedisPoolConfig"><a href="#step3、配置JedisPoolConfig" class="headerlink" title="step3、配置JedisPoolConfig"></a>step3、配置JedisPoolConfig</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;jedisPoolConfig&quot;   class=&quot;redis.clients.jedis.JedisPoolConfig&quot; &gt;</div><div class="line">    &lt;property name=&quot;minIdle&quot; value=&quot;$&#123;redis.minIdle&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;maxIdle&quot; value=&quot;$&#123;redis.maxIdle&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;maxTotal&quot; value=&quot;$&#123;redis.maxActive&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;maxWaitMillis&quot; value=&quot;$&#123;redis.maxWait&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;testOnBorrow&quot; value=&quot;$&#123;redis.testOnBorrow&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;testOnReturn&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>配置文件spring-redis.properties内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">redis.minIdle=50</div><div class="line">redis.maxIdle=200</div><div class="line">redis.maxActive=100</div><div class="line">redis.maxWait=3000</div><div class="line">redis.testOnBorrow=true</div></pre></td></tr></table></figure>
+<h4 id="step4、配置RedisSentinelConfiguration"><a href="#step4、配置RedisSentinelConfiguration" class="headerlink" title="step4、配置RedisSentinelConfiguration"></a>step4、配置RedisSentinelConfiguration</h4><p>和集群配置一样，sentinel也有两种配置方式</p>
+<p>1.sentinels设值注入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;redisSentinelConfiguration&quot; class=&quot;org.springframework.data.redis.connection.RedisSentinelConfiguration&quot;&gt;</div><div class="line">    &lt;property name=&quot;sentinels&quot;&gt;</div><div class="line">        &lt;set&gt;</div><div class="line">            &lt;bean name=&quot;sentinelNode1&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.31&quot;/&gt;</div><div class="line">                &lt;constructor-arg name=&quot;port&quot; value=&quot;26379&quot;/&gt;</div><div class="line">            &lt;/bean&gt;</div><div class="line">            &lt;bean name=&quot;sentinelNode2&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.32&quot;/&gt;</div><div class="line">                &lt;constructor-arg name=&quot;port&quot; value=&quot;26379&quot;/&gt;</div><div class="line">            &lt;/bean&gt;</div><div class="line">            &lt;bean name=&quot;sentinelNode3&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.33&quot;/&gt;</div><div class="line">                &lt;constructor-arg name=&quot;port&quot; value=&quot;26379&quot;/&gt;</div><div class="line">            &lt;/bean&gt;</div><div class="line">        &lt;/set&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">    &lt;property name=&quot;master&quot;&gt;</div><div class="line">        &lt;bean name=&quot;masterNode&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">            &lt;!--必须指定主节点名称--&gt;</div><div class="line">            &lt;property name=&quot;name&quot; value=&quot;mymaster&quot;/&gt;</div><div class="line">            &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.31&quot;/&gt;</div><div class="line">            &lt;constructor-arg name=&quot;port&quot; value=&quot;6379&quot;/&gt;</div><div class="line">        &lt;/bean&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>2.propertySource构造注入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;redisSentinelConfiguration&quot; class=&quot;org.springframework.data.redis.connection.RedisSentinelConfiguration&quot;&gt;</div><div class="line">    &lt;constructor-arg name=&quot;propertySource&quot; ref=&quot;propertySource&quot;/&gt;</div><div class="line">&lt;/bean&gt;</div><div class="line"></div><div class="line">&lt;bean name=&quot;propertySource&quot; class=&quot;org.springframework.core.io.support.ResourcePropertySource&quot;&gt;</div><div class="line">    &lt;constructor-arg name=&quot;location&quot; value=&quot;classpath:spring-redis-sentinel.properties&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>spring-redis-sentinel.properties内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#哨兵监控主redis节点名称，必选</div><div class="line">spring.redis.sentinel.master=mymaster</div><div class="line">#哨兵节点</div><div class="line">spring.redis.sentinel.nodes=192.168.48.31:26379,192.168.48.32:26379,192.168.48.33:26379</div></pre></td></tr></table></figure>
+<p>RedisSentinelConfiguration源码中这两个配置属性常量：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">private static final String REDIS_SENTINEL_MASTER_CONFIG_PROPERTY = &quot;spring.redis.sentinel.master&quot;;</div><div class="line">private static final String REDIS_SENTINEL_NODES_CONFIG_PROPERTY = &quot;spring.redis.sentinel.nodes&quot;;</div></pre></td></tr></table></figure>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODEwMDkzNDI4NzI2?x-oss-process=image/format,png" alt="RedisSentinelConfiguration源码"></p>
+<h4 id="step5、配置RedisTemplate"><a href="#step5、配置RedisTemplate" class="headerlink" title="step5、配置RedisTemplate"></a>step5、配置RedisTemplate</h4><p>然后配置RedisTemplate，用于redis命令操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;stringRedisTemplate&quot; class=&quot;org.springframework.data.redis.core.StringRedisTemplate&quot; p:connection-factory-ref=&quot;jedisConnectionFactory&quot;/&gt;</div></pre></td></tr></table></figure>
+<h4 id="step6、测试"><a href="#step6、测试" class="headerlink" title="step6、测试"></a>step6、测试</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">package example;</div><div class="line"></div><div class="line">import org.springframework.context.support.ClassPathXmlApplicationContext;</div><div class="line">import org.springframework.data.redis.core.StringRedisTemplate;</div><div class="line">import org.springframework.data.redis.core.ValueOperations;</div><div class="line"></div><div class="line">public class SpringMain &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) throws InterruptedException &#123;</div><div class="line">        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;classpath:spring-redis.xml&quot;);</div><div class="line">        StringRedisTemplate template = context.getBean(StringRedisTemplate.class);</div><div class="line">        ValueOperations&lt;String, String&gt; valueOperations = template.opsForValue();</div><div class="line">        valueOperations.set(&quot;foo&quot;,&quot;bar&quot;);</div><div class="line">        context.destroy();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>由于主从复制，Master(48.31)、Slave1(48.32)、Slave0(48.33)能查看到相同的结果：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNDQwNDA5?x-oss-process=image/format,png" alt="master的foo值"><br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMzE2NDI2?x-oss-process=image/format,png" alt="slave1的foo值"><br><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyMzE2NDI2?x-oss-process=image/format,png" alt="slave2的foo值"></p>
+<p>到此，spring整合redis sentinel完成，完整配置如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</div><div class="line">       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">       xmlns:p=&quot;http://www.springframework.org/schema/p&quot; xmlns:redis=&quot;http://www.springframework.org/schema/redis&quot;</div><div class="line">       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</div><div class="line">       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;</div><div class="line"></div><div class="line">    &lt;context:property-placeholder location=&quot;classpath:*.properties&quot; ignore-unresolvable=&quot;true&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;!-- Jedis ConnectionFactory --&gt;</div><div class="line">    &lt;bean id=&quot;jedisConnectionFactory&quot; class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;&gt;</div><div class="line">        &lt;constructor-arg name=&quot;sentinelConfig&quot; ref=&quot;redisSentinelConfiguration&quot;/&gt;</div><div class="line">        &lt;constructor-arg name=&quot;poolConfig&quot; ref=&quot;jedisPoolConfig&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;bean id=&quot;redisSentinelConfiguration&quot; class=&quot;org.springframework.data.redis.connection.RedisSentinelConfiguration&quot;&gt;</div><div class="line">        &lt;constructor-arg name=&quot;propertySource&quot; ref=&quot;propertySource&quot;/&gt;</div><div class="line">&lt;!--        &lt;property name=&quot;sentinels&quot;&gt;</div><div class="line">            &lt;set&gt;</div><div class="line">                &lt;bean name=&quot;sentinelNode1&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                    &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.31&quot;/&gt;</div><div class="line">                    &lt;constructor-arg name=&quot;port&quot; value=&quot;26379&quot;/&gt;</div><div class="line">                &lt;/bean&gt;</div><div class="line">                &lt;bean name=&quot;sentinelNode2&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                    &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.32&quot;/&gt;</div><div class="line">                    &lt;constructor-arg name=&quot;port&quot; value=&quot;26379&quot;/&gt;</div><div class="line">                &lt;/bean&gt;</div><div class="line">                &lt;bean name=&quot;sentinelNode3&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                    &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.33&quot;/&gt;</div><div class="line">                    &lt;constructor-arg name=&quot;port&quot; value=&quot;26379&quot;/&gt;</div><div class="line">                &lt;/bean&gt;</div><div class="line">            &lt;/set&gt;</div><div class="line">        &lt;/property&gt;</div><div class="line">        &lt;property name=&quot;master&quot;&gt;</div><div class="line">            &lt;bean name=&quot;masterNode&quot; class=&quot;org.springframework.data.redis.connection.RedisNode&quot;&gt;</div><div class="line">                &amp;lt;!&amp;ndash;必须指定主节点名称&amp;ndash;&amp;gt;</div><div class="line">                &lt;property name=&quot;name&quot; value=&quot;mymaster&quot;/&gt;</div><div class="line">                &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.31&quot;/&gt;</div><div class="line">                &lt;constructor-arg name=&quot;port&quot; value=&quot;6379&quot;/&gt;</div><div class="line">            &lt;/bean&gt;</div><div class="line">        &lt;/property&gt;--&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;bean name=&quot;propertySource&quot; class=&quot;org.springframework.core.io.support.ResourcePropertySource&quot;&gt;</div><div class="line">        &lt;constructor-arg name=&quot;location&quot; value=&quot;classpath:spring-redis-sentinel.properties&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;!-- JedisPoolConfig definition --&gt;</div><div class="line">    &lt;bean id=&quot;jedisPoolConfig&quot;   class=&quot;redis.clients.jedis.JedisPoolConfig&quot; &gt;</div><div class="line">        &lt;property name=&quot;minIdle&quot; value=&quot;$&#123;redis.minIdle&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;maxIdle&quot; value=&quot;$&#123;redis.maxIdle&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;maxTotal&quot; value=&quot;$&#123;redis.maxActive&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;maxWaitMillis&quot; value=&quot;$&#123;redis.maxWait&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;testOnBorrow&quot; value=&quot;$&#123;redis.testOnBorrow&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;testOnReturn&quot; value=&quot;true&quot; /&gt;</div><div class="line">        &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;!-- redis template definition --&gt;</div><div class="line">    &lt;bean id=&quot;stringRedisTemplate&quot; class=&quot;org.springframework.data.redis.core.StringRedisTemplate&quot; p:connection-factory-ref=&quot;jedisConnectionFactory&quot;/&gt;</div></pre></td></tr></table></figure>
+<h3 id="sentinel故障转移"><a href="#sentinel故障转移" class="headerlink" title="sentinel故障转移"></a>sentinel故障转移</h3><p>为验证故障转移，我们关闭Master节点<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">shutdown</div></pre></td></tr></table></figure></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNTMzODYw?x-oss-process=image/format,png" alt="关闭Master节点"></p>
+<p>Sentinel监控日志：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNjQyMDY2?x-oss-process=image/format,png" alt="Sentinel监控日志"></p>
+<p>简单解释下日志信息：</p>
+<ul>
+<li>+sdown 表示监控节点主观下线（单个Sentinel实例对服务器做出的下线判断）</li>
+<li>+odown 表示监控节点客观下线（多个Sentinel实例对服务器做出的sdown判断），sentinel.config中配置达到2个sdown（quorum参数配置）便判断为客观下线</li>
+<li>+switch-master 从slave节点中选个作为新的主节点，Slave1（192.168.48.32:6379）</li>
+</ul>
+<p>查看该节点信息，发现他的角色已经变为master，原先的Slave0(192.168.48.33:6379)变成新master的slave：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">redis-cli -h 192.168.48.32 info Replication</div></pre></td></tr></table></figure>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyNzI3MzU1?x-oss-process=image/format,png" alt="新Master节点"></p>
+<p>接下来再来测试一种情况：在故障节点重启之前发送写命令，故障节点重启后数据是否会复制过来？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">valueOperations.set(&quot;foo1&quot;,&quot;bar1&quot;);</div></pre></td></tr></table></figure>
+<p>结果：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIyOTMyODA4?x-oss-process=image/format,png" alt="新master的foo1值"></p>
+<p>重启原来的Master节点（192.168.48.31:6379）</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODEwMDk1ODQ2OTk2?x-oss-process=image/format,png" alt="重启原Master节点后"></p>
+<p> 原先的Master重启后变成了新Master的从节点了，试着查看foo1的值</p>
+<p> <img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA5MTIzMDIxNTUy?x-oss-process=image/format,png" alt="foo1值同步过来了"></p>
+<p>可见，重启后，新的从节点会复制新的master节点，保证数据一致性。</p>
+<p><strong>参考</strong></p>
+<p>spring-data-redis sentinel:<a href="https://docs.spring.io/spring-data/redis/docs/2.0.0.RC2/reference/html/#redis:sentinel" target="_blank" rel="external">https://docs.spring.io/spring-data/redis/docs/2.0.0.RC2/reference/html/#redis:sentinel</a></p>
+<p>中文官网：<a href="http://www.redis.cn/topics/sentinel.html" target="_blank" rel="external">http://www.redis.cn/topics/sentinel.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" <i class="fa fa-tag"></i> Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/08/06/Spring整合Redis之集群与故障转移/" rel="next" title="Spring整合Redis之集群与故障转移">
+                <i class="fa fa-chevron-left"></i> Spring整合Redis之集群与故障转移
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/23/开篇,扬帆起航！/" rel="prev" title="开篇,扬帆起航！">
+                开篇,扬帆起航！ <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+       
+         <div id="gitment-container"></div>
+       
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/picture/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/u014513883" target="_blank" title="CSDN博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+	  
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#环境准备"><span class="nav-number">2.</span> <span class="nav-text">环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring整合redis-sentinel"><span class="nav-number">3.</span> <span class="nav-text">spring整合redis sentinel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1、maven依赖引入"><span class="nav-number">3.1.</span> <span class="nav-text">step1、maven依赖引入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2、配置ConnectionFactory"><span class="nav-number">3.2.</span> <span class="nav-text">step2、配置ConnectionFactory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3、配置JedisPoolConfig"><span class="nav-number">3.3.</span> <span class="nav-text">step3、配置JedisPoolConfig</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step4、配置RedisSentinelConfiguration"><span class="nav-number">3.4.</span> <span class="nav-text">step4、配置RedisSentinelConfiguration</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step5、配置RedisTemplate"><span class="nav-number">3.5.</span> <span class="nav-text">step5、配置RedisTemplate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step6、测试"><span class="nav-number">3.6.</span> <span class="nav-text">step6、测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sentinel故障转移"><span class="nav-number">4.</span> <span class="nav-text">sentinel故障转移</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">
+      35.6k
+    </span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+   
+       <script type="text/javascript">
+           var gitment = new Gitment({
+               id: 'Spring整合Redis之哨兵与故障转移', 
+               owner: '251029725',
+               repo: 'BlogComments',
+               oauth: {
+                   client_id: '6b23971b9bc711ad8a77',
+                   client_secret: '0d6333feba0d533f1b1f9fdc4f57c39c8c9364ab',
+               }});
+           gitment.render('gitment-container');
+       </script>
+   
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("IzANThQbGgh3xlT9QzywaftY-gzGzoHsz", "mhjhCxSUcSqsyOPbiKdNQ5Tv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

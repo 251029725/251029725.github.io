@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+<meta name="theme-color" content="#222">
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "3b93eacd"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+
+  
+
+  
+    
+      
+    
+
+    
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Monda:300,300italic,400,400italic,700,700italic|Roboto Slab:300,300italic,400,400italic,700,700italic|PT Mono:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Redis," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2" />
+
+
+
+
+
+
+<meta name="description" content="前言本文主要讲解spring整合redis集群，关于redis集群搭建网上相关文章挺多的，大家可以自己先搭建好，可以参考官网或中文版官网。本文假设你已经搭建好集群了，笔者redis(版本4.0.1)集群环境如下图：  7000、7001、7002三个主节点，7003、7004、7005三个从节点。Redis集群共有16384个哈希槽（hash slot）用于存放key，当前3个节点哈希槽分布为：">
+<meta name="keywords" content="Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring整合Redis之集群与故障转移">
+<meta property="og:url" content="http://yoursite.com/2017/08/06/Spring整合Redis之集群与故障转移/index.html">
+<meta property="og:site_name" content="风树种子个人博客">
+<meta property="og:description" content="前言本文主要讲解spring整合redis集群，关于redis集群搭建网上相关文章挺多的，大家可以自己先搭建好，可以参考官网或中文版官网。本文假设你已经搭建好集群了，笔者redis(版本4.0.1)集群环境如下图：  7000、7001、7002三个主节点，7003、7004、7005三个从节点。Redis集群共有16384个哈希槽（hash slot）用于存放key，当前3个节点哈希槽分布为：">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNzMzOTM0?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNTAxNjg0?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNjA1OTIw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwOTIwNTYy?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMDQzOTQ1?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMTMwOTc4?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMTU5ODc0?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMjI5NTQ4?x-oss-process=image/format,png">
+<meta property="og:updated_time" content="2020-06-14T07:50:50.212Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spring整合Redis之集群与故障转移">
+<meta name="twitter:description" content="前言本文主要讲解spring整合redis集群，关于redis集群搭建网上相关文章挺多的，大家可以自己先搭建好，可以参考官网或中文版官网。本文假设你已经搭建好集群了，笔者redis(版本4.0.1)集群环境如下图：  7000、7001、7002三个主节点，7003、7004、7005三个从节点。Redis集群共有16384个哈希槽（hash slot）用于存放key，当前3个节点哈希槽分布为：">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNzMzOTM0?x-oss-process=image/format,png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.2',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/08/06/Spring整合Redis之集群与故障转移/"/>
+
+
+
+
+
+  <title>Spring整合Redis之集群与故障转移 | 风树种子个人博客</title>
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?4c7d800a042138aa6974195b2f5d4b83";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">风树种子个人博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">自娱自乐</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-commonweal">
+          <a href="/404.html" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br />
+            
+            公益404
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/08/06/Spring整合Redis之集群与故障转移/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/picture/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="风树种子个人博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Spring整合Redis之集群与故障转移</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-08-06T18:26:17+08:00">
+                2017-08-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Redis/" itemprop="url" rel="index">
+                    <span itemprop="name">Redis</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2017/08/06/Spring整合Redis之集群与故障转移/" class="leancloud_visitors" data-flag-title="Spring整合Redis之集群与故障转移">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数&#58;</span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-file-word-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">字数统计&#58;</span>
+                
+                <span title="字数统计">
+                  1,744字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-clock-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">阅读时长 &asymp;</span>
+                
+                <span title="阅读时长">
+                  9分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <script src="\assets\js\APlayer.min.js"> </script><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h3><p>本文主要讲解spring整合redis集群，关于redis集群搭建网上相关文章挺多的，大家可以自己先搭建好，可以参考<a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="external">官网</a>或<a href="http://www.redis.cn/topics/cluster-tutorial.html" target="_blank" rel="external">中文版官网</a>。本文假设你已经搭建好集群了，笔者redis(版本4.0.1)集群环境如下图：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNzMzOTM0?x-oss-process=image/format,png" alt="正常集群状态"></p>
+<p>7000、7001、7002三个主节点，7003、7004、7005三个从节点。Redis集群共有16384个哈希槽（hash slot）用于存放key，当前3个节点哈希槽分布为：</p>
+<ul>
+<li>节点 7000 包含 0 到 5460号哈希槽</li>
+<li>节点 7001 包含 5461 到 10922 号哈希槽</li>
+<li>节点 7002 包含 10923 到 16383 号哈希槽</li>
+</ul>
+<h3 id="spring整合redis-cluster"><a href="#spring整合redis-cluster" class="headerlink" title="spring整合redis cluster"></a><strong>spring整合redis cluster</strong></h3><h4 id="step1、maven依赖引入"><a href="#step1、maven依赖引入" class="headerlink" title="step1、maven依赖引入"></a><strong>step1、maven依赖引入</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;dependencies&gt;</div><div class="line">    &lt;dependency&gt;</div><div class="line">        &lt;groupId&gt;org.springframework.data&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;spring-data-redis&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;1.8.6.RELEASE&lt;/version&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line">    &lt;dependency&gt;</div><div class="line">        &lt;groupId&gt;redis.clients&lt;/groupId&gt;</div><div class="line">        &lt;artifactId&gt;jedis&lt;/artifactId&gt;</div><div class="line">        &lt;version&gt;2.9.0&lt;/version&gt;</div><div class="line">    &lt;/dependency&gt;</div><div class="line">&lt;/dependencies&gt;</div></pre></td></tr></table></figure>
+<h4 id="step2、配置ConnectionFactory"><a href="#step2、配置ConnectionFactory" class="headerlink" title="step2、配置ConnectionFactory"></a><strong>step2、配置ConnectionFactory</strong></h4><p>建立集群连接需要获取RedisClusterConnection实例，该实例通过RedisConnectionFactory获取，可以如下配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;jedisConnectionFactory&quot; class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;&gt;</div><div class="line">    &lt;constructor-arg name=&quot;clusterConfig&quot; ref=&quot;redisClusterConfiguration&quot;/&gt;</div><div class="line">    &lt;constructor-arg name=&quot;poolConfig&quot; ref=&quot;jedisPoolConfig&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure></p>
+<p>JedisConnectionFactory是RedisConnectionFactory的实现，构造函数需要两个参数，分别是集群配置clusterConfig和池配置poolConfig，下面一一来看</p>
+<h4 id="step3、配置JedisPoolConfig"><a href="#step3、配置JedisPoolConfig" class="headerlink" title="step3、配置JedisPoolConfig"></a><strong>step3、配置JedisPoolConfig</strong></h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;jedisPoolConfig&quot;   class=&quot;redis.clients.jedis.JedisPoolConfig&quot; &gt;</div><div class="line">    &lt;property name=&quot;minIdle&quot; value=&quot;$&#123;redis.minIdle&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;maxIdle&quot; value=&quot;$&#123;redis.maxIdle&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;maxTotal&quot; value=&quot;$&#123;redis.maxActive&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;maxWaitMillis&quot; value=&quot;$&#123;redis.maxWait&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;testOnBorrow&quot; value=&quot;$&#123;redis.testOnBorrow&#125;&quot; /&gt;</div><div class="line">    &lt;property name=&quot;testOnReturn&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>各个属性值从属性文件中读取，需要如下配置</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;context:property-placeholder location=&quot;classpath:*.properties&quot; ignore-unresolvable=&quot;true&quot; /&gt;</div></pre></td></tr></table></figure>
+<p>属性文件spring-redis.properties内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">redis.minIdle=50</div><div class="line">redis.maxIdle=200</div><div class="line">redis.maxActive=100</div><div class="line">redis.maxWait=3000</div><div class="line">redis.testOnBorrow=true</div></pre></td></tr></table></figure>
+<h4 id="step4、配置RedisClusterConfiguration"><a href="#step4、配置RedisClusterConfiguration" class="headerlink" title="step4、配置RedisClusterConfiguration"></a><strong>step4、配置RedisClusterConfiguration</strong></h4><p>集群配置有两种方式</p>
+<p>1.clusterNodes设值注入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;redisClusterConfiguration&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterConfiguration&quot;&gt;</div><div class="line">    &lt;property name=&quot;clusterNodes&quot;&gt;</div><div class="line">      &lt;set&gt;</div><div class="line">           &lt;bean name=&quot;node1&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterNode&quot;&gt;</div><div class="line">               &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.28&quot;/&gt;</div><div class="line">               &lt;constructor-arg name=&quot;port&quot; value=&quot;7000&quot;/&gt;</div><div class="line">           &lt;/bean&gt;</div><div class="line">           &lt;bean name=&quot;node2&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterNode&quot;&gt;</div><div class="line">               &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.28&quot;/&gt;</div><div class="line">               &lt;constructor-arg name=&quot;port&quot; value=&quot;7001&quot;/&gt;</div><div class="line">           &lt;/bean&gt;</div><div class="line">           &lt;bean name=&quot;node3&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterNode&quot;&gt;</div><div class="line">               &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.28&quot;/&gt;</div><div class="line">               &lt;constructor-arg name=&quot;port&quot; value=&quot;7002&quot;/&gt;</div><div class="line">           &lt;/bean&gt;</div><div class="line">       &lt;/set&gt;</div><div class="line">    &lt;/property&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>2.propertySource构造注入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;redisClusterConfiguration&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterConfiguration&quot;&gt;</div><div class="line">    &lt;constructor-arg name=&quot;propertySource&quot; ref=&quot;propertySource&quot;/&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>构造函数参数类型为org.springframework.core.env.PropertySource，我们使用它的实现类ResourcePropertySource</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">&lt;bean name=&quot;propertySource&quot; class=&quot;org.springframework.core.io.support.ResourcePropertySource&quot;&gt;</div><div class="line">    &lt;constructor-arg name=&quot;location&quot; value=&quot;classpath:spring-redis-cluster.properties&quot; /&gt;</div><div class="line">&lt;/bean&gt;</div></pre></td></tr></table></figure>
+<p>spring-redis-cluster.properties内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">#集群节点host:port,多个节点逗号分隔</div><div class="line">spring.redis.cluster.nodes=192.168.48.28:7000,192.168.48.28:7001,192.168.48.28:7002</div><div class="line">spring.redis.cluster.max-redirects=5</div></pre></td></tr></table></figure>
+<p>查看RedisClusterConfiguration源码可以看到这两个配置属性常量</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNTAxNjg0?x-oss-process=image/format,png" alt="RedisClusterConfiguration源码"></p>
+<p>个人比较喜欢第二种配置，更加简洁</p>
+<h4 id="step5、配置RedisTemplate"><a href="#step5、配置RedisTemplate" class="headerlink" title="step5、配置RedisTemplate"></a><strong>step5、配置RedisTemplate</strong></h4><p>然后配置RedisTemplate，我们用StringRedisTemplate实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">&lt;bean id=&quot;stringRedisTemplate&quot; class=&quot;org.springframework.data.redis.core.StringRedisTemplate&quot; p:connection-factory-ref=&quot;jedisConnectionFactory&quot;/&gt;</div></pre></td></tr></table></figure>
+<h4 id="step6、测试"><a href="#step6、测试" class="headerlink" title="step6、测试"></a><strong>step6、测试</strong></h4><p>通过main方法测试一下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">package example;</div><div class="line"></div><div class="line">import org.springframework.context.support.ClassPathXmlApplicationContext;</div><div class="line">import org.springframework.data.redis.core.StringRedisTemplate;</div><div class="line">import org.springframework.data.redis.core.ValueOperations;</div><div class="line"></div><div class="line">public class SpringMain &#123;</div><div class="line"></div><div class="line">    public static void main(String[] args) throws InterruptedException &#123;</div><div class="line">        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(&quot;classpath:spring-redis.xml&quot;);</div><div class="line">        StringRedisTemplate template = context.getBean(StringRedisTemplate.class);</div><div class="line">        ValueOperations&lt;String, String&gt; valueOperations = template.opsForValue();</div><div class="line">        valueOperations.set(&quot;key1&quot;,&quot;value1&quot;);</div><div class="line">        valueOperations.set(&quot;key2&quot;,&quot;value2&quot;);</div><div class="line">        valueOperations.set(&quot;key3&quot;,&quot;value3&quot;);</div><div class="line">        valueOperations.set(&quot;key4&quot;,&quot;value4&quot;);</div><div class="line">        valueOperations.set(&quot;key5&quot;,&quot;value5&quot;);</div><div class="line">        valueOperations.set(&quot;key6&quot;,&quot;value6&quot;);</div><div class="line">        System.exit(0);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>通过命令行连接redis服务器查看结果：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwNjA1OTIw?x-oss-process=image/format,png" alt="测试结果"></p>
+<p>每个key通过CRC16（详情参考<a href="http://www.redis.cn/topics/cluster-spec.html" target="_blank" rel="external">官网</a>）校验后对16384取模放到对应哈希槽（hash slot）中。redis-cli客户端工具会根据哈希槽（hash slot）所在节点进行跳转，所以会看到“-&gt; Redirected to slot…”的提示。<br>最后贴下完整配置：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</div><div class="line">&lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;</div><div class="line">       xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</div><div class="line">       xmlns:p=&quot;http://www.springframework.org/schema/p&quot; xmlns:redis=&quot;http://www.springframework.org/schema/redis&quot;</div><div class="line">       xmlns:context=&quot;http://www.springframework.org/schema/context&quot;</div><div class="line">       xsi:schemaLocation=&quot;http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/redis http://www.springframework.org/schema/redis/spring-redis.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd&quot;&gt;</div><div class="line"></div><div class="line">    &lt;context:property-placeholder location=&quot;classpath:*.properties&quot; ignore-unresolvable=&quot;true&quot; /&gt;</div><div class="line"></div><div class="line">    &lt;!-- Jedis ConnectionFactory --&gt;</div><div class="line">    &lt;bean id=&quot;jedisConnectionFactory&quot; class=&quot;org.springframework.data.redis.connection.jedis.JedisConnectionFactory&quot;&gt;</div><div class="line">        &lt;constructor-arg name=&quot;clusterConfig&quot; ref=&quot;redisClusterConfiguration&quot;/&gt;</div><div class="line">        &lt;constructor-arg name=&quot;poolConfig&quot; ref=&quot;jedisPoolConfig&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;!-- RedisClusterConfiguration --&gt;</div><div class="line">    &lt;bean id=&quot;redisClusterConfiguration&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterConfiguration&quot;&gt;</div><div class="line">        &lt;constructor-arg name=&quot;propertySource&quot; ref=&quot;propertySource&quot;/&gt;</div><div class="line">      &lt;!--  &lt;property name=&quot;clusterNodes&quot;&gt;</div><div class="line">           &lt;set&gt;</div><div class="line">               &lt;bean name=&quot;node1&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterNode&quot;&gt;</div><div class="line">                   &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.28&quot;/&gt;</div><div class="line">                   &lt;constructor-arg name=&quot;port&quot; value=&quot;7000&quot;/&gt;</div><div class="line">               &lt;/bean&gt;</div><div class="line">               &lt;bean name=&quot;node2&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterNode&quot;&gt;</div><div class="line">                   &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.28&quot;/&gt;</div><div class="line">                   &lt;constructor-arg name=&quot;port&quot; value=&quot;7001&quot;/&gt;</div><div class="line">               &lt;/bean&gt;</div><div class="line">               &lt;bean name=&quot;node3&quot; class=&quot;org.springframework.data.redis.connection.RedisClusterNode&quot;&gt;</div><div class="line">                   &lt;constructor-arg name=&quot;host&quot; value=&quot;192.168.48.28&quot;/&gt;</div><div class="line">                   &lt;constructor-arg name=&quot;port&quot; value=&quot;7002&quot;/&gt;</div><div class="line">               &lt;/bean&gt;</div><div class="line">           &lt;/set&gt;</div><div class="line">        &lt;/property&gt;--&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;bean name=&quot;propertySource&quot; class=&quot;org.springframework.core.io.support.ResourcePropertySource&quot;&gt;</div><div class="line">        &lt;constructor-arg name=&quot;location&quot; value=&quot;classpath:spring-redis-cluster.properties&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line"></div><div class="line">    &lt;!-- JedisPoolConfig definition --&gt;</div><div class="line">    &lt;bean id=&quot;jedisPoolConfig&quot;   class=&quot;redis.clients.jedis.JedisPoolConfig&quot; &gt;</div><div class="line">        &lt;property name=&quot;minIdle&quot; value=&quot;$&#123;redis.minIdle&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;maxIdle&quot; value=&quot;$&#123;redis.maxIdle&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;maxTotal&quot; value=&quot;$&#123;redis.maxActive&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;maxWaitMillis&quot; value=&quot;$&#123;redis.maxWait&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;testOnBorrow&quot; value=&quot;$&#123;redis.testOnBorrow&#125;&quot; /&gt;</div><div class="line">        &lt;property name=&quot;testOnReturn&quot; value=&quot;true&quot; /&gt;</div><div class="line">        &lt;property name=&quot;testWhileIdle&quot; value=&quot;true&quot; /&gt;</div><div class="line">    &lt;/bean&gt;</div><div class="line">    </div><div class="line">    &lt;!-- redis template definition --&gt;</div><div class="line">    &lt;bean id=&quot;stringRedisTemplate&quot; class=&quot;org.springframework.data.redis.core.StringRedisTemplate&quot; p:connection-factory-ref=&quot;jedisConnectionFactory&quot;/&gt;</div><div class="line">    </div><div class="line">&lt;/beans&gt;</div></pre></td></tr></table></figure>
+<h3 id="redis集群进阶"><a href="#redis集群进阶" class="headerlink" title="redis集群进阶"></a><strong>redis集群进阶</strong></h3><h4 id="故障转移"><a href="#故障转移" class="headerlink" title="故障转移"></a><strong>故障转移</strong></h4><p>现在我们来测试下故障转移，通过向端口号为7002的主节点发送<strong>DEBUG SEGFAULT</strong>命令， 让这个主节点崩溃：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ redis-cli -p 7002 debug segfault</div></pre></td></tr></table></figure>
+<p>查看现在集群节点状态：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQwOTIwNTYy?x-oss-process=image/format,png" alt="7002fail"></p>
+<p>可以看到7002状态为fail,他的从节点7005被选举为新的主节点<br>根据前面的测试我们知道键key4被“hash”到了13120哈希槽，位于7002节点，现在7002挂了，他会放到哪呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ValueOperations&lt;String, String&gt; valueOperations = template.opsForValue();</div><div class="line">valueOperations.set(&quot;key4&quot;,&quot;bar4&quot;);</div></pre></td></tr></table></figure></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMDQzOTQ1?x-oss-process=image/format,png" alt="7002fail 后故障转移"></p>
+<p>可以看见，13120哈希槽已经转移到新的主节点7005上了</p>
+<h4 id="主从复制模型"><a href="#主从复制模型" class="headerlink" title="主从复制模型"></a><strong>主从复制模型</strong></h4><p>如果上步新的主节点7005也挂了会出现什么情况呢？我们让这个节点崩溃：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ redis-cli -p 7005 debug segfault</div></pre></td></tr></table></figure></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMTMwOTc4?x-oss-process=image/format,png" alt="make 7005 fail command"></p>
+<p>查看现在集群节点状态：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMTU5ODc0?x-oss-process=image/format,png" alt="7002 and 7005 both fail"></p>
+<p>可以看到7005的状态也为fail，现在通过spring redis发送命令，会报连接异常</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">Exception in thread &quot;main&quot; org.springframework.data.redis.RedisConnectionFailureException: Could not get a resource from the pool; nested exception is redis.clients.jedis.exceptions.JedisConnectionException: Could not get a resource from the pool</div><div class="line">	at org.springframework.data.redis.connection.jedis.JedisExceptionConverter.convert(JedisExceptionConverter.java:67)</div><div class="line">	at org.springframework.data.redis.connection.jedis.JedisExceptionConverter.convert(JedisExceptionConverter.java:41)</div><div class="line">	at org.springframework.data.redis.PassThroughExceptionTranslationStrategy.translate(PassThroughExceptionTranslationStrategy.java:37)</div><div class="line">	at org.springframework.data.redis.connection.jedis.JedisClusterConnection.convertJedisAccessException(JedisClusterConnection.java:3999)</div><div class="line">	at org.springframework.data.redis.connection.jedis.JedisClusterConnection.set(JedisClusterConnection.java:642)</div><div class="line">	at org.springframework.data.redis.connection.DefaultStringRedisConnection.set(DefaultStringRedisConnection.java:744)</div><div class="line">	at org.springframework.data.redis.core.DefaultValueOperations$10.inRedis(DefaultValueOperations.java:172)</div><div class="line">	at org.springframework.data.redis.core.AbstractOperations$ValueDeserializingRedisCallback.doInRedis(AbstractOperations.java:57)</div><div class="line">	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:207)</div><div class="line">	at org.springframework.data.redis.core.RedisTemplate.execute(RedisTemplate.java:169)</div><div class="line">	at org.springframework.data.redis.core.AbstractOperations.execute(AbstractOperations.java:91)</div><div class="line">	at org.springframework.data.redis.core.DefaultValueOperations.set(DefaultValueOperations.java:169)</div><div class="line">	at example.SpringMain.main(SpringMain.java:26)</div></pre></td></tr></table></figure>
+<p>再看看通过命令行向集群发送命令：</p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODA0MTQxMjI5NTQ4?x-oss-process=image/format,png" alt="cluster down"></p>
+<p>发现整个集群已经宕掉了，根据redis主从复制模型，当某个主节点和他的所有从节点都挂掉，集群会因为缺少某一范围的哈希槽而不用，如上集群7002主节点7005从节点都挂了，集群因缺少10923-16383范围哈希槽而变的不可用。</p>
+<p><strong>参考</strong></p>
+<p>spring-data-redis cluster:<a href="https://docs.spring.io/spring-data/redis/docs/2.0.0.RC2/reference/html/#cluster" target="_blank" rel="external">https://docs.spring.io/spring-data/redis/docs/2.0.0.RC2/reference/html/#cluster</a></p>
+<p>中文官网Redis集群教程:<a href="http://www.redis.cn/topics/cluster-tutorial.html" target="_blank" rel="external">http://www.redis.cn/topics/cluster-tutorial.html</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Redis/" <i class="fa fa-tag"></i> Redis</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/10/Spring整合Redis之哨兵与故障转移/" rel="prev" title="Spring整合Redis之哨兵与故障转移">
+                Spring整合Redis之哨兵与故障转移 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+        
+  <div class="bdsharebuttonbox">
+    <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+    <a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a>
+    <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+    <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a href="#" class="bds_tieba" data-cmd="tieba" title="分享到百度贴吧"></a>
+    <a href="#" class="bds_twi" data-cmd="twi" title="分享到Twitter"></a>
+    <a href="#" class="bds_fbook" data-cmd="fbook" title="分享到Facebook"></a>
+    <a href="#" class="bds_more" data-cmd="more"></a>
+    <a class="bds_count" data-cmd="count"></a>
+  </div>
+  <script>
+    window._bd_share_config = {
+      "common": {
+        "bdText": "",
+        "bdMini": "2",
+        "bdMiniList": false,
+        "bdPic": ""
+      },
+      "share": {
+        "bdSize": "16",
+        "bdStyle": "0"
+      },
+      "image": {
+        "viewList": ["tsina", "douban", "sqq", "qzone", "weixin", "twi", "fbook"],
+        "viewText": "分享到：",
+        "viewSize": "16"
+      }
+    }
+  </script>
+
+<script>
+  with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='//bdimg.share.baidu.com/static/api/js/share.js?cdnversion='+~(-new Date()/36e5)];
+</script>
+
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+       
+         <div id="gitment-container"></div>
+       
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/picture/avatar.jpg"
+               alt="" />
+          <p class="site-author-name" itemprop="name"></p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+            
+              <a href="/archives/">
+            
+                <span class="site-state-item-count">19</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">10</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="http://blog.csdn.net/u014513883" target="_blank" title="CSDN博客">
+                  
+                    <i class="fa fa-fw fa-globe"></i>
+                  
+                    
+                      CSDN博客
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/251029725" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+	  
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring整合redis-cluster"><span class="nav-number">2.</span> <span class="nav-text">spring整合redis cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#step1、maven依赖引入"><span class="nav-number">2.1.</span> <span class="nav-text">step1、maven依赖引入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step2、配置ConnectionFactory"><span class="nav-number">2.2.</span> <span class="nav-text">step2、配置ConnectionFactory</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step3、配置JedisPoolConfig"><span class="nav-number">2.3.</span> <span class="nav-text">step3、配置JedisPoolConfig</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step4、配置RedisClusterConfiguration"><span class="nav-number">2.4.</span> <span class="nav-text">step4、配置RedisClusterConfiguration</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step5、配置RedisTemplate"><span class="nav-number">2.5.</span> <span class="nav-text">step5、配置RedisTemplate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#step6、测试"><span class="nav-number">2.6.</span> <span class="nav-text">step6、测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis集群进阶"><span class="nav-number">3.</span> <span class="nav-text">redis集群进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#故障转移"><span class="nav-number">3.1.</span> <span class="nav-text">故障转移</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#主从复制模型"><span class="nav-number">3.2.</span> <span class="nav-text">主从复制模型</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder"></span>
+
+  
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    
+      <span class="post-meta-item-text">Site words total count&#58;</span>
+    
+    <span title="Site words total count">
+      35.6k
+    </span>
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+  <span class="post-meta-divider">|</span>
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.2</div>
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+   
+   
+   
+   
+   <link rel="stylesheet" href="https://imsun.github.io/gitment/style/default.css">
+   <script src="https://imsun.github.io/gitment/dist/gitment.browser.js"></script>
+   
+       <script type="text/javascript">
+           var gitment = new Gitment({
+               id: 'Spring整合Redis之集群与故障转移', 
+               owner: '251029725',
+               repo: 'BlogComments',
+               oauth: {
+                   client_id: '6b23971b9bc711ad8a77',
+                   client_secret: '0d6333feba0d533f1b1f9fdc4f57c39c8c9364ab',
+               }});
+           gitment.render('gitment-container');
+       </script>
+   
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("IzANThQbGgh3xlT9QzywaftY-gzGzoHsz", "mhjhCxSUcSqsyOPbiKdNQ5Tv");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
