@@ -123,12 +123,12 @@
 <meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="1.数据库自增ID的弊端 暴露业务数据，比如用户表采用自增ID，别人可以根据ID知道系统有多少用户 分库分表时无法保证ID唯一性  2.需要什么样的ID生成策略 全局唯一 有序性 高性能，生成ID时延低 可扩展，支持数据库水平扩展 安全性，不能暴露业务数据  3.几种ID生成方案3.1.UUIDUUID(Universally Unique Identifier)的标准型式包含32个16进制数字">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/ds/snowflake.jpg">
-<meta property="og:updated_time" content="2018-07-19T06:07:55.355Z">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-d36950b9e59bd0a0d3fffdf45de2c023c0e.JPEG">
+<meta property="og:updated_time" content="2020-06-15T13:26:27.172Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统那些事-分布式ID生成策略">
 <meta name="twitter:description" content="1.数据库自增ID的弊端 暴露业务数据，比如用户表采用自增ID，别人可以根据ID知道系统有多少用户 分库分表时无法保证ID唯一性  2.需要什么样的ID生成策略 全局唯一 有序性 高性能，生成ID时延低 可扩展，支持数据库水平扩展 安全性，不能暴露业务数据  3.几种ID生成方案3.1.UUIDUUID(Universally Unique Identifier)的标准型式包含32个16进制数字">
-<meta name="twitter:image" content="https://fengshuzhongzi.github.io/uploads/blog/ds/snowflake.jpg">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-d36950b9e59bd0a0d3fffdf45de2c023c0e.JPEG">
 
 
 
@@ -476,7 +476,7 @@
 <li>UUID作为主键建立索引查询效率低，常见优化方案为转化为两个uint64整数存储或者“折半存储”（折半后不能保证唯一性）；</li>
 <li>由于使用实现版本的不一样，在高并发情况下可能会出现UUID重复的情况；</li>
 </ul>
-<h2 id="3-2SnowFlake算法"><a href="#3-2SnowFlake算法" class="headerlink" title="3.2SnowFlake算法"></a>3.2SnowFlake算法</h2><h3 id="3-2-1-概念"><a href="#3-2-1-概念" class="headerlink" title="3.2.1.概念"></a>3.2.1.概念</h3><p>twitter的<a href="https://github.com/twitter/snowflake/tree/snowflake-2010" target="_blank" rel="external">SnowFlake</a>算法生成id的结果是一个64bit大小的整数，它的结构如下图：<br><img src="/uploads/blog/ds/snowflake.jpg" alt="SnowFlake"></p>
+<h2 id="3-2SnowFlake算法"><a href="#3-2SnowFlake算法" class="headerlink" title="3.2SnowFlake算法"></a>3.2SnowFlake算法</h2><h3 id="3-2-1-概念"><a href="#3-2-1-概念" class="headerlink" title="3.2.1.概念"></a>3.2.1.概念</h3><p>twitter的<a href="https://github.com/twitter/snowflake/tree/snowflake-2010" target="_blank" rel="external">SnowFlake</a>算法生成id的结果是一个64bit大小的整数，它的结构如下图：<br><img src="https://oscimg.oschina.net/oscnet/up-d36950b9e59bd0a0d3fffdf45de2c023c0e.JPEG" alt="SnowFlake"></p>
 <ul>
 <li><strong>1位</strong>，不用。二进制中最高位为1的都是负数，但是我们生成的id一般都使用整数，所以这个最高位固定是0</li>
 <li><p><strong>41位</strong>，用来记录时间戳（毫秒）。</p>

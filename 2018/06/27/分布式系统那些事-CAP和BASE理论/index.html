@@ -123,12 +123,12 @@
 <meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="CAP理论定义CAP定理（CAP theorem），又被称作布鲁尔定理（Brewer’s theorem），它指出对于一个分布式计算系统来说，不可能同时满足以下三点：  一致性（Consistence）   每次读取到的数据都是最近一次写的数据，等同于所有节点访问同一份最新的数据副本。  可用性（Availability）  每次请求都能在一定时间内获取到非错的响应——但是不保证获取的数据为最新">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/cap/cap.png">
-<meta property="og:updated_time" content="2018-06-27T02:29:18.159Z">
+<meta property="og:image" content="https://oscimg.oschina.net/oscnet/up-26be20c0f341fc69d6b797bebef42867e45.png">
+<meta property="og:updated_time" content="2020-06-15T13:28:28.136Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="分布式系统那些事-CAP和BASE理论">
 <meta name="twitter:description" content="CAP理论定义CAP定理（CAP theorem），又被称作布鲁尔定理（Brewer’s theorem），它指出对于一个分布式计算系统来说，不可能同时满足以下三点：  一致性（Consistence）   每次读取到的数据都是最近一次写的数据，等同于所有节点访问同一份最新的数据副本。  可用性（Availability）  每次请求都能在一定时间内获取到非错的响应——但是不保证获取的数据为最新">
-<meta name="twitter:image" content="https://fengshuzhongzi.github.io/uploads/blog/cap/cap.png">
+<meta name="twitter:image" content="https://oscimg.oschina.net/oscnet/up-26be20c0f341fc69d6b797bebef42867e45.png">
 
 
 
@@ -479,7 +479,7 @@
 </ul>
 <p>要高可用并允许分区，则需放弃一致性。一旦分区发生，节点之间可能会失去联系，为了高可用，每个节点只能用本地数据提供服务，而这样会导致全局数据的不一致性。现在众多的NoSQL都属于此类。当然，这里所说的放弃一致性，并不是完全放弃数据一致性，而是放弃数据的强一致性，而保留数据的最终一致性。</p>
 <p>下图展示了围绕CA、AP和CP构建的技术：</p>
-<p><img src="/uploads/blog/cap/cap.png" alt="cap"></p>
+<p><img src="https://oscimg.oschina.net/oscnet/up-26be20c0f341fc69d6b797bebef42867e45.png" alt="cap"></p>
 <p>CAP定理并不意味着所有系统的设计都必须抛弃三个要素中的一个。三者可以在一定程度上衡量，并不是非黑即白，例如可用性从0%到100%有不同等级。</p>
 <h1 id="BASE理论"><a href="#BASE理论" class="headerlink" title="BASE理论"></a>BASE理论</h1><h2 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h2><p>BASE理论是指，<strong>基本可用（Basically Available）</strong>、<strong>柔性状态（Soft State）</strong>、<strong>最终一致性（Eventual consistency）</strong>，是基于CAP定理演化而来，是对CAP中一致性和可用性权衡的结果。</p>
 <ul>

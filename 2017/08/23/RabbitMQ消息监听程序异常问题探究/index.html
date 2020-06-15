@@ -123,14 +123,14 @@
 <meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/rabbitmq/1.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/rabbitmq/2.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/rabbitmq/3.png">
-<meta property="og:updated_time" content="2017-11-22T03:36:31.284Z">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjExMjU4Nzk3?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjExNTU0MzYw?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjEyMjIxNzA4?x-oss-process=image/format,png">
+<meta property="og:updated_time" content="2020-06-15T13:31:45.586Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="RabbitMQ消息监听程序异常问题探究">
 <meta name="twitter:description" content="问题场景在使用Spring RabbitMQ做消息监听时，如果监听程序处理异常了，且未对异常进行捕获，会一直重复接收消息，然后一直抛异常。为了更好的描述问题，下面写个简单的例子。 通过访问null对象来引发空指针异常，消息监听处理程序代码清单: 123456789101112131415161718package amqp;import org.springframework.amqp.core">
-<meta name="twitter:image" content="https://fengshuzhongzi.github.io/uploads/blog/rabbitmq/1.png">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjExMjU4Nzk3?x-oss-process=image/format,png">
 
 
 
@@ -464,7 +464,7 @@
 <p>首先，修改下监听程序，收到字符串exception时产生异常</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@Override</span></div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message)</span> </span>&#123;</div><div class="line">    String messageBody = <span class="keyword">new</span> String(message.getBody());</div><div class="line">    System.out.println(<span class="string">" [x] Received '"</span> + messageBody + <span class="string">"'"</span>);</div><div class="line">    <span class="keyword">if</span>(messageBody.equals(<span class="string">"exception"</span>))&#123;</div><div class="line">        String nullStr = <span class="keyword">null</span>;</div><div class="line">        nullStr.toString();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
 <h4 id="1-监听程序正常处理情况"><a href="#1-监听程序正常处理情况" class="headerlink" title="1.监听程序正常处理情况"></a><strong>1.监听程序正常处理情况</strong></h4><p>启动监听程序，Wireshark抓包情况：</p>
-<p><img src="/uploads/blog/rabbitmq/1.png" alt="启动监听程序"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjExMjU4Nzk3?x-oss-process=image/format,png" alt="启动监听程序"></p>
 <p>我们主要关注最后一列，这一列展示了请求的AMQP协议方法信息，AMQP协议方法包含类名+方法名+参数，这一列主要展示了类名和方法名，点击对应行可以查看参数信息。比如上图：</p>
 <ul>
 <li>Connection.Start：请求服务端开始建立连接</li>
@@ -476,7 +476,7 @@
 <p>然后，通过客户端发送一条消息</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RabbitTemplate template = ctx.getBean(RabbitTemplate.class);</div><div class="line">template.convertAndSend(<span class="string">"ok"</span>);</div></pre></td></tr></table></figure>
 <p>抓包：</p>
-<p><img src="/uploads/blog/rabbitmq/2.png" alt="ack"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjExNTU0MzYw?x-oss-process=image/format,png" alt="ack"></p>
 <p>分析：</p>
 <ul>
 <li>Basic.Publish： 客户端发送Basic.Publish方法请求，将消息发布到exchange，rabbitmq server会根据路由规则转发到队列中</li>
@@ -485,7 +485,7 @@
 </ul>
 <h4 id="2-监听程序异常处理情况"><a href="#2-监听程序异常处理情况" class="headerlink" title="2.监听程序异常处理情况"></a><strong>2.监听程序异常处理情况</strong></h4><p>通过客户端发送exception字符串，制造异常<br><figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">RabbitTemplate template = ctx.getBean(RabbitTemplate.class);</div><div class="line">template.convertAndSend(<span class="string">"exception"</span>);</div></pre></td></tr></table></figure></p>
 <p>抓包：</p>
-<p><img src="/uploads/blog/rabbitmq/3.png" alt="reject"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwODE4MjEyMjIxNzA4?x-oss-process=image/format,png" alt="reject"></p>
 <p>分析：</p>
 <ul>
 <li>Basic.Reject： 客户端发送Basic.Reject方法请求，表示无法处理消息，拒绝消息，此时的requeue参数为true，将消息返回原来的队列</li>

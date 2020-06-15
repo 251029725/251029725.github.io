@@ -123,16 +123,16 @@
 <meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="复制解决的问题1.备份容灾 不同备库分布在不用的地理位置，物理隔绝，可以用来备份数据和容灾 2.负载均衡 复制可以将多个读操作分布到不用的备库服务器，实现对读密集型应用的优化 3.高可用性能和故障切换 复制能避免MySQL单点故障，某个节点发生宕机，可以快速记性故障切换，提高系统高可用性 4.MySQL升级测试 这种做法较普遍，使用一个更高版本的MySQL作为备库，保证在升级全部实例前，查询能正">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="http://img.blog.csdn.net/20170910125053554?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxNDUxMzg4Mw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/一主多从.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/双主复制-主动.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/双主复制-被动.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/级联复制.png">
-<meta property="og:updated_time" content="2017-09-11T15:17:09.196Z">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI1MDUzNTU0?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0ODEyNTkx?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0NjA3Njkx?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0NjQ5MzQ2?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0NTQyNDc5?x-oss-process=image/format,png">
+<meta property="og:updated_time" content="2020-06-15T13:31:05.637Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL Replication主从复制原理及拓扑结构">
 <meta name="twitter:description" content="复制解决的问题1.备份容灾 不同备库分布在不用的地理位置，物理隔绝，可以用来备份数据和容灾 2.负载均衡 复制可以将多个读操作分布到不用的备库服务器，实现对读密集型应用的优化 3.高可用性能和故障切换 复制能避免MySQL单点故障，某个节点发生宕机，可以快速记性故障切换，提高系统高可用性 4.MySQL升级测试 这种做法较普遍，使用一个更高版本的MySQL作为备库，保证在升级全部实例前，查询能正">
-<meta name="twitter:image" content="http://img.blog.csdn.net/20170910125053554?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxNDUxMzg4Mw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI1MDUzNTU0?x-oss-process=image/format,png">
 
 
 
@@ -469,7 +469,7 @@
 <p>2.备库将主库上的日志复制到自己的中继日志（Relay Log）中</p>
 <p>3.备库读取中继日志中的事件，将其重放到备库数据库</p>
 <p>下图更详细描述复制的细节：</p>
-<p><img src="http://img.blog.csdn.net/20170910125053554?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxNDUxMzg4Mw==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="复制原理"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI1MDUzNTU0?x-oss-process=image/format,png" alt="复制原理"></p>
 <p>第一步中，每次准备提交事务完成数据更新前，主库将数据更新的事件记录到二进制日志中，完了才会一起提交事务，所以不用担心数据更新了，但是二进制日志更新却失败的情况出现</p>
 <p>下一步，备库会启动一个I/O线程和主库建立连接，主库上启动一个特殊的二进制转储（binlog dump）线程读取二进制日志中的事件，备库I/O线程会将接收到的事件记录到中继日志中</p>
 <p>最后一步，备库的SQL线程重中继日志中读取事件并在备库上执行，从而实现数据更新</p>
@@ -501,13 +501,13 @@
 <li>一个备库可以把其主库上的数据变化传递到其他备库，需要log_slave_updates选项设置为1，即允许备库将其重放的事件也记录到自身的二进制日志中</li>
 </ul>
 <p>复制拓扑结构很多，下面介绍几种常见的</p>
-<h2 id="一主多备"><a href="#一主多备" class="headerlink" title="一主多备"></a>一主多备</h2><p><img src="/uploads/blog/mysql/一主多从.png" alt="一主多备"></p>
+<h2 id="一主多备"><a href="#一主多备" class="headerlink" title="一主多备"></a>一主多备</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0ODEyNTkx?x-oss-process=image/format,png" alt="一主多备"></p>
 <p>最简单的拓扑结构，再有少量写大量读的时候，可以通过读写分离减小负载。还有，可以将备库放到不同地理位置的机房，做数据备份容灾</p>
-<h2 id="主动-主动模式下的主-主复制"><a href="#主动-主动模式下的主-主复制" class="headerlink" title="主动-主动模式下的主-主复制"></a>主动-主动模式下的主-主复制</h2><p><img src="/uploads/blog/mysql/双主复制-主动.png" alt="双主复制-主动"></p>
+<h2 id="主动-主动模式下的主-主复制"><a href="#主动-主动模式下的主-主复制" class="headerlink" title="主动-主动模式下的主-主复制"></a>主动-主动模式下的主-主复制</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0NjA3Njkx?x-oss-process=image/format,png" alt="双主复制-主动"></p>
 <p>主-主复制（也叫双主复制或双向复制），每一个都被配置成对方的主库和备库。该拓扑可能的应用场景是两个处于不同地理位置的办公室，并且都需要<strong>可写</strong>的数据拷贝。这种配置最大的问题是如何解决冲突，两个可写的互主服务器导致的问题非常多，通常发生在两天服务器同时修改同一行记录，或者同时向包含auto_increment列的表里插入数据，会造成两边数据不一致</p>
-<h2 id="主动-被动模式下的主-主复制"><a href="#主动-被动模式下的主-主复制" class="headerlink" title="主动-被动模式下的主-主复制"></a>主动-被动模式下的主-主复制</h2><p><img src="/uploads/blog/mysql/双主复制-被动.png" alt="双主复制-被动"></p>
+<h2 id="主动-被动模式下的主-主复制"><a href="#主动-被动模式下的主-主复制" class="headerlink" title="主动-被动模式下的主-主复制"></a>主动-被动模式下的主-主复制</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0NjQ5MzQ2?x-oss-process=image/format,png" alt="双主复制-被动"></p>
 <p>和上一种主要区别在于其中一台服务器是只读的被动服务器。这种方式使得切换主动和被动服务器非常方便，因为服务器配置是对称的。这使得故障转移和故障恢复很容易。它也可以让你在不关闭服务器的情况下维护、优化表。</p>
-<h2 id="级联复制"><a href="#级联复制" class="headerlink" title="级联复制"></a>级联复制</h2><p><img src="/uploads/blog/mysql/级联复制.png" alt="级联复制"></p>
+<h2 id="级联复制"><a href="#级联复制" class="headerlink" title="级联复制"></a>级联复制</h2><p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTEwMTI0NTQyNDc5?x-oss-process=image/format,png" alt="级联复制"></p>
 <p>直接从属主库的备库太多时，连接到主库的I/O线程比较多，增大主库压力，它的缺点是中间层出现错误，会影响到多个服务器，中间层层次越多，故障处理越复杂</p>
 <h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p>[1] 《高性能MySQL》</p>
 

@@ -123,17 +123,17 @@
 <meta property="og:site_name" content="风树种子个人博客">
 <meta property="og:description" content="MySQL安装环境版本： Linux:CentOS6.5 MySQL:5.7.19 IP:192.168.48.33（Master）、192.168.48.34（Slave） 安装步骤： 1.根据Linux版本下载RPM 1wget dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm 2.安装RPM 1yum install my">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/mysql%20init.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/create%20user.png">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/create.gif">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/insert.gif">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/update.gif">
-<meta property="og:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/delete.gif">
-<meta property="og:updated_time" content="2017-09-14T08:29:02.579Z">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA5MTYyODM2MjU1?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA5MTYyOTI0NjYz?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgwMjI4MjQ0?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgxNTQ1Nzky?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgxNjUxNjI5?x-oss-process=image/format,png">
+<meta property="og:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgxNzUzMzYx?x-oss-process=image/format,png">
+<meta property="og:updated_time" content="2020-06-15T13:30:34.291Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL Replication主从复制搭建">
 <meta name="twitter:description" content="MySQL安装环境版本： Linux:CentOS6.5 MySQL:5.7.19 IP:192.168.48.33（Master）、192.168.48.34（Slave） 安装步骤： 1.根据Linux版本下载RPM 1wget dev.mysql.com/get/mysql-community-release-el6-5.noarch.rpm 2.安装RPM 1yum install my">
-<meta name="twitter:image" content="https://fengshuzhongzi.github.io/uploads/blog/mysql/mysql%20init.png">
+<meta name="twitter:image" content="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA5MTYyODM2MjU1?x-oss-process=image/format,png">
 
 
 
@@ -482,8 +482,8 @@
 <p>如果需要从其他主机访问，比如Windows客户端连接，需要关闭IP访问限制：</p>
 <p>grant all on 数据库名.* to 用户名@’客户端IP地址’ identified by ‘密码’;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grant all on *.* to root@&apos;%&apos;identified by&apos;password&apos;;</div></pre></td></tr></table></figure></p>
 <p>部分步骤示例：</p>
-<p><img src="/uploads/blog/mysql/mysql init.png" alt="部分步骤示例"></p>
-<h1 id="Replication主从复制配置"><a href="#Replication主从复制配置" class="headerlink" title="Replication主从复制配置"></a>Replication主从复制配置</h1><p>在配置MySQL主从复制之前，最好先对MySQL主从复制的原理过程有个认识，这样配置起来会轻松的多，可以看看笔者的上一篇博客： <a href="http://www.wuqingjian.org/2017/09/11/MySQL%20Replication主从复制原理及拓扑结构/#more" target="_blank" rel="external">MySQL Replication主从复制原理及拓扑结构</a></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA5MTYyODM2MjU1?x-oss-process=image/format,png" alt="部分步骤示例"></p>
+<h1 id="Replication主从复制配置"><a href="#Replication主从复制配置" class="headerlink" title="Replication主从复制配置"></a>Replication主从复制配置</h1><p>在配置MySQL主从复制之前，最好先对MySQL主从复制的原理过程有个认识，这样配置起来会轻松的多，可以看看笔者的上一篇博客： <a href="http://blog.csdn.net/u014513883/article/details/77939210" target="_blank" rel="external">MySQL Replication主从复制原理及拓扑结构</a></p>
 <p>1.配置主库</p>
 <p>修改/etc/my.cnf配置文件，启用二进制日志并创建唯一服务ID</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[mysqld]</div><div class="line">log-bin=mysql-bin</div><div class="line">server-id=1</div></pre></td></tr></table></figure>
@@ -492,7 +492,7 @@
 <p>3.主库创建用户</p>
 <p>备库连接到主库需要账号密码，所以需要在主库上创建用户，并授予REPLICATION SLAVE权限。可以为每个备库创建一个账号也可以一起共用一个</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">mysql&gt; CREATE USER &apos;repl&apos;@&apos;%.mydomain.com&apos; IDENTIFIED BY &apos;slavepass&apos;;</div><div class="line">mysql&gt; GRANT REPLICATION SLAVE ON *.* TO &apos;repl&apos;@&apos;%.mydomain.com&apos;;</div></pre></td></tr></table></figure>
-<p><img src="/uploads/blog/mysql/create user.png" alt="master创建用户"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA5MTYyOTI0NjYz?x-oss-process=image/format,png" alt="master创建用户"></p>
 <p>4.确认二进制日志是否在主库上创建</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show master status;</div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line">| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |</div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div><div class="line">| mysql-bin.000001 |      595 |              |                  |                   |</div><div class="line">+------------------+----------+--------------+------------------+-------------------+</div></pre></td></tr></table></figure>
 <p>这里显示的二进制日志文件名称和偏移量可能和你定义的会有点不一样</p>
@@ -515,13 +515,13 @@
 <p>备库上也可以看到一个I/O线程和SQL线程</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">mysql&gt; show processlist;</div><div class="line">+----+-------------+-----------+------+---------+-------+--------------------------------------------------------+------------------+</div><div class="line">| Id | User        | Host      | db   | Command | Time  | State                                                  | Info             |</div><div class="line">+----+-------------+-----------+------+---------+-------+--------------------------------------------------------+------------------+</div><div class="line">|  4 | root        | localhost | NULL | Query   |     0 | starting                                               | show processlist |</div><div class="line">|  6 | system user |           | NULL | Connect |   204 | Waiting for master to send event                       | NULL             |</div><div class="line">|  7 | system user |           | NULL | Connect | 12551 | Slave has read all relay log; waiting for more updates | NULL             |</div><div class="line">+----+-------------+-----------+------+---------+-------+--------------------------------------------------------+------------------+</div></pre></td></tr></table></figure>
 <h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><p><strong>1.建库建表演示：</strong></p>
-<p><img src="/uploads/blog/mysql/create.gif" alt="建库建表演示"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgwMjI4MjQ0?x-oss-process=image/format,png" alt="建库建表演示"></p>
 <p><strong>2.插入数据演示</strong></p>
-<p><img src="/uploads/blog/mysql/insert.gif" alt="插入数据演示"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgxNTQ1Nzky?x-oss-process=image/format,png" alt="插入数据演示"></p>
 <p><strong>3.更新数据演示</strong></p>
-<p><img src="/uploads/blog/mysql/update.gif" alt="更新数据演示"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgxNjUxNjI5?x-oss-process=image/format,png" alt="更新数据演示"></p>
 <p><strong>4.删除数据演示</strong></p>
-<p><img src="/uploads/blog/mysql/delete.gif" alt="删除数据演示"></p>
+<p><img src="https://imgconvert.csdnimg.cn/aHR0cDovL2ltZy5ibG9nLmNzZG4ubmV0LzIwMTcwOTA4MTgxNzUzMzYx?x-oss-process=image/format,png" alt="删除数据演示"></p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>本文介绍了MySQL一主一从拓扑结构的复制配置过程，总结起来就三步：</p>
 <p>1.创建复制账号</p>
 <p>2.配置主库和备库</p>
